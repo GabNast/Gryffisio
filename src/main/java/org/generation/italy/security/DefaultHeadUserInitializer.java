@@ -1,7 +1,6 @@
 package org.generation.italy.security;
 
-import org.generation.italy.model.entities.AppUser;
-import org.generation.italy.model.entities.UserRole;
+import org.generation.italy.model.entities.Admin;
 import org.generation.italy.model.repositories.AppUserRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -25,7 +24,7 @@ public class DefaultHeadUserInitializer implements CommandLineRunner {
         String username = System.getenv().getOrDefault("APP_HEAD_USERNAME", "head");
         String password = System.getenv().get("APP_HEAD_PASSWORD"); // intentionally no default
 
-        if (appUserRepository.existsByUsername(username)) {
+        if (appUserRepository.existsByName(username)) {
             return;
         }
 
@@ -42,11 +41,9 @@ public class DefaultHeadUserInitializer implements CommandLineRunner {
             return;
         }
 
-        AppUser user = new AppUser();
-        user.setUsername(username);
+        Admin user = new Admin();
+        user.setName(username);
         user.setPasswordHash(passwordEncoder.encode(password));
-        user.setEnabled(true);
-        user.setRoles(Set.of(UserRole.HEAD));
         appUserRepository.save(user);
     }
 }

@@ -4,8 +4,8 @@ import java.util.Set;
 
 public record UserDto(
         long id,
-        String username,
-        boolean enabled,
-        Set<String> roles
+        String name
+        //boolean enabled,
+        //Set<String> roles
 ) {}
 

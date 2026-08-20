@@ -1,6 +1,6 @@
 package org.generation.italy.security;
 
-import org.generation.italy.model.entities.AppUser;
+import org.generation.italy.model.entities.Admin;
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
 import org.springframework.security.oauth2.jwt.JwsHeader;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
@@ -20,7 +20,7 @@ public class JwtService {
         this.props = props;
     }
 
-    public String createToken(AppUser user) {
+    public String createToken(Admin user) {
         Instant now = Instant.now();
         Instant expiresAt = now.plus(props.ttl());
 
@@ -28,9 +28,8 @@ public class JwtService {
                 .issuer(props.issuer())
                 .issuedAt(now)
                 .expiresAt(expiresAt)
-                .subject(user.getUsername())
+                .subject(user.getName())
                 .claim("uid", user.getId())
-                .claim("roles", user.getRoles().stream().map(Enum::name).toList())
                 .build();
 
         JwsHeader headers = JwsHeader.with(MacAlgorithm.HS256).build();

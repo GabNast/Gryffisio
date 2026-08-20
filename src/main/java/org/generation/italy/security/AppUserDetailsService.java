@@ -1,6 +1,6 @@
 package org.generation.italy.security;
 
-import org.generation.italy.model.entities.AppUser;
+import org.generation.italy.model.entities.Admin;
 import org.generation.italy.model.repositories.AppUserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -14,9 +14,9 @@ public class AppUserDetailsService implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        AppUser user = appUserRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
+    public UserDetails loadUserByUsername(String name) throws UsernameNotFoundException {
+        Admin user = appUserRepository.findByName(name)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + name));
         return new AppUserPrincipal(user);
     }
 }

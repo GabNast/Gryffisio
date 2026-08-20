@@ -4,8 +4,7 @@ import org.generation.italy.model.dto.CreateUserRequest;
 import org.generation.italy.model.dto.LoginRequest;
 import org.generation.italy.model.dto.LoginResponse;
 import org.generation.italy.model.dto.UserDto;
-import org.generation.italy.model.entities.AppUser;
-import org.generation.italy.model.entities.UserRole;
+import org.generation.italy.model.entities.Admin;
 import org.generation.italy.model.exceptions.BadRequestException;
 import org.generation.italy.model.exceptions.ConflictException;
 import org.generation.italy.model.repositories.AppUserRepository;
@@ -43,64 +42,37 @@ public class AuthService {
     @Transactional(readOnly = true)
     public LoginResponse login(LoginRequest request) {
         authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.username(), request.password())
+                new UsernamePasswordAuthenticationToken(request.name(), request.password())
         );
 
-        AppUser user = appUserRepository.findByUsername(request.username())
-                .orElseThrow(() -> new NotFoundException("user_not_found", "User not found: " + request.username()));
+        Admin user = appUserRepository.findByName(request.name())
+                .orElseThrow(() -> new NotFoundException("user_not_found", "User not found: " + request.name()));
 
         String token = jwtService.createToken(user);
-        return new LoginResponse(token, user.getRoles().stream().map(Enum::name).toList());
+        return new LoginResponse(token);
     }
 
     @Transactional
     public UserDto createUser(CreateUserRequest request) {
-        if (request.username() == null || request.username().isBlank()) {
+        if (request.name() == null || request.name().isBlank()) {
             throw new BadRequestException("invalid_request", "Username is required");
         }
         if (request.password() == null || request.password().isBlank()) {
             throw new BadRequestException("invalid_request", "Password is required");
         }
-        if (appUserRepository.existsByUsername(request.username())) {
-            throw new ConflictException("username_unavailable", "Username already exists: " + request.username());
+        if (appUserRepository.existsByName(request.name())) {
+            throw new ConflictException("username_unavailable", "Username already exists: " + request.name());
         }
 
-        Set<UserRole> roles = parseRoles(request.roles());
-        if (roles.isEmpty()) {
-            throw new BadRequestException("invalid_request", "At least one role is required");
-        }
 
-        AppUser user = new AppUser();
-        user.setUsername(request.username());
+        Admin user = new Admin();
+        user.setName(request.name());
         user.setPasswordHash(passwordEncoder.encode(request.password()));
-        user.setEnabled(true);
-        user.setRoles(roles);
 
-        AppUser saved = appUserRepository.save(user);
+        Admin saved = appUserRepository.save(user);
         return new UserDto(
                 saved.getId(),
-                saved.getUsername(),
-                saved.isEnabled(),
-                saved.getRoles().stream().map(Enum::name).collect(Collectors.toSet())
+                saved.getName()
         );
-    }
-
-    private static Set<UserRole> parseRoles(Set<String> roles) {
-        if (roles == null) {
-            return Set.of();
-        }
-        return roles.stream()
-                .filter(r -> r != null && !r.isBlank())
-                .map(r -> r.trim().toUpperCase(Locale.ROOT))
-                .map(AuthService::parseRole)
-                .collect(Collectors.toSet());
-    }
-
-    private static UserRole parseRole(String role) {
-        try {
-            return UserRole.valueOf(role);
-        } catch (IllegalArgumentException ex) {
-            throw new BadRequestException("invalid_role", "Role must be STUDENT, TEACHER, or HEAD");
-        }
     }
 }

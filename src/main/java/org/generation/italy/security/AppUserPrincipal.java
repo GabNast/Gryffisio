@@ -1,38 +1,41 @@
 package org.generation.italy.security;
 
-import org.generation.italy.model.entities.AppUser;
+import org.generation.italy.model.entities.Admin;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.List;
 
 public class AppUserPrincipal implements UserDetails {
-    private final AppUser user;
+    private final Admin admin;
 
-    public AppUserPrincipal(AppUser user) {
-        this.user = user;
+    public AppUserPrincipal(Admin user) {
+        this.admin = user;
     }
 
-    public AppUser getUser() {
-        return user;
+    public Admin getUser() {
+        return admin;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return user.getRoles().stream()
-                .map(r -> new SimpleGrantedAuthority("ROLE_" + r.name()))
-                .toList();
+        return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"));
     }
+        //return user.getRoles().stream()
+        //        .map(r -> new SimpleGrantedAuthority("ROLE_" + r.name()))
+        //        .toList();
+    //}
 
     @Override
     public String getPassword() {
-        return user.getPasswordHash();
+        return admin.getPasswordHash();
     }
 
     @Override
     public String getUsername() {
-        return user.getUsername();
+        return admin.getName();
     }
 
     @Override
@@ -52,7 +55,7 @@ public class AppUserPrincipal implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return user.isEnabled();
+        return true;
     }
 }
 

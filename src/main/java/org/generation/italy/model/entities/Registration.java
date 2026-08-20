@@ -73,4 +73,136 @@ public class Registration {
             inverseJoinColumns = @JoinColumn(name="test_id")
     )
     private Set<Test> tests = new HashSet<>();
+
+    public Registration(Long id, Domain domain, Project project, ReferringDoctor referringDoctor, SubjectType subjectType, LocalDate date, Integer durationMinutes, String session, LocalDate creationDate, LocalDate lastModifiedDate, Boolean isModified, Set<Researcher> researchers, Set<Patient> patients, Set<Test> tests) {
+        this.id = id;
+        this.domain = domain;
+        this.project = project;
+        this.referringDoctor = referringDoctor;
+        this.subjectType = subjectType;
+        this.date = date;
+        this.durationMinutes = durationMinutes;
+        this.session = session;
+        this.creationDate = creationDate;
+        this.lastModifiedDate = lastModifiedDate;
+        this.isModified = isModified;
+        this.researchers = researchers;
+        this.patients = patients;
+        this.tests = tests;
+    }
+
+    public Registration() {
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Domain getDomain() {
+        return domain;
+    }
+
+    public void setDomain(Domain domain) {
+        this.domain = domain;
+    }
+
+    public Project getProject() {
+        return project;
+    }
+
+    public void setProject(Project project) {
+        this.project = project;
+    }
+
+    public ReferringDoctor getReferringDoctor() {
+        return referringDoctor;
+    }
+
+    public void setReferringDoctor(ReferringDoctor referringDoctor) {
+        this.referringDoctor = referringDoctor;
+    }
+
+    public SubjectType getSubjectType() {
+        return subjectType;
+    }
+
+    public void setSubjectType(SubjectType subjectType) {
+        this.subjectType = subjectType;
+    }
+
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public void setDate(LocalDate date) {
+        this.date = date;
+    }
+
+    public Integer getDurationMinutes() {
+        return durationMinutes;
+    }
+
+    public void setDurationMinutes(Integer durationMinutes) {
+        this.durationMinutes = durationMinutes;
+    }
+
+    public String getSession() {
+        return session;
+    }
+
+    public void setSession(String session) {
+        this.session = session;
+    }
+
+    public LocalDate getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(LocalDate creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    public LocalDate getLastModifiedDate() {
+        return lastModifiedDate;
+    }
+
+    public void setLastModifiedDate(LocalDate lastModifiedDate) {
+        this.lastModifiedDate = lastModifiedDate;
+    }
+
+    public Boolean getModified() {
+        return isModified;
+    }
+
+    public void setModified(Boolean modified) {
+        isModified = modified;
+    }
+
+    public Set<Researcher> getResearchers() {
+        return researchers;
+    }
+
+    public void setResearchers(Set<Researcher> researchers) {
+        this.researchers = researchers;
+    }
+
+    public Set<Patient> getPatients() {
+        return patients;
+    }
+
+    public void setPatients(Set<Patient> patients) {
+        this.patients = patients;
+    }
+
+    public Set<Test> getTests() {
+        return tests;
+    }
+
+    public void setTests(Set<Test> tests) {
+        this.tests = tests;
+    }
 }
