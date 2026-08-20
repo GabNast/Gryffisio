@@ -12,18 +12,18 @@ public class AuditLog {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "registration_id")
+    @JoinColumn(name = "registration_id", nullable = false)
     private Registration registration;
 
     @ManyToOne
-    @JoinColumn(name = "admin_id")
+    @JoinColumn(name = "admin_id", nullable = false)
     private Admin admin;
 
     @Column(nullable = false, length = 255)
     private String action;
 
     @ManyToOne
-    @JoinColumn(name = "json_details_registration")
+    @JoinColumn(name = "json_details_registration", nullable = false)
     private Registration jsonRegistration;
 
     @Column(name="date_time", nullable = false)

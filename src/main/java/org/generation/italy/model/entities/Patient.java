@@ -8,7 +8,6 @@ import jakarta.persistence.*;
 public class Patient {
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
-    @Column(name="id")
     private Long id;
 
     @Column(name="patient_code", nullable = false)

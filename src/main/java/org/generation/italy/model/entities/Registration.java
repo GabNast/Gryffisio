@@ -1,9 +1,9 @@
 package org.generation.italy.model.entities;
 
 import jakarta.persistence.*;
-import org.apache.catalina.User;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -12,15 +12,14 @@ import java.util.Set;
 public class Registration {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
-    @Column(name="id")
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "domain_id")
+    @JoinColumn(name = "domain_id", nullable = false)
     private Domain domain;
 
     @ManyToOne
-    @JoinColumn(name = "project_id")
+    @JoinColumn(name = "project_id", nullable = false)
     private Project project;
 
     @ManyToOne
@@ -28,7 +27,7 @@ public class Registration {
     private ReferringDoctor referringDoctor;
 
     @ManyToOne
-    @JoinColumn(name = "subject_type_id")
+    @JoinColumn(name = "subject_type_id", nullable = false)
     private SubjectType subjectType;
 
     @Column(name="date",nullable = false)
@@ -37,14 +36,14 @@ public class Registration {
     @Column(name="duration_minutes", nullable = false)
     private Integer durationMinutes;
 
-    @Column(nullable = true, columnDefinition = "TEXT")
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String session;
 
     @Column(name="creation_date", nullable = false)
-    private LocalDate creationDate;
+    private LocalDateTime creationDate;
 
-    @Column(name="last_modified_date", nullable = false)
-    private LocalDate lastModifiedDate;
+    @Column(name="last_modified_date")
+    private LocalDateTime lastModifiedDate;
 
     @Column(name="is_modified", nullable = false)
     private Boolean isModified = false;
@@ -74,7 +73,7 @@ public class Registration {
     )
     private Set<Test> tests = new HashSet<>();
 
-    public Registration(Long id, Domain domain, Project project, ReferringDoctor referringDoctor, SubjectType subjectType, LocalDate date, Integer durationMinutes, String session, LocalDate creationDate, LocalDate lastModifiedDate, Boolean isModified, Set<Researcher> researchers, Set<Patient> patients, Set<Test> tests) {
+    public Registration(Long id, Domain domain, Project project, ReferringDoctor referringDoctor, SubjectType subjectType, LocalDate date, Integer durationMinutes, String session, LocalDateTime creationDate, LocalDateTime lastModifiedDate, Boolean isModified, Set<Researcher> researchers, Set<Patient> patients, Set<Test> tests) {
         this.id = id;
         this.domain = domain;
         this.project = project;
@@ -158,19 +157,19 @@ public class Registration {
         this.session = session;
     }
 
-    public LocalDate getCreationDate() {
+    public LocalDateTime getCreationDate() {
         return creationDate;
     }
 
-    public void setCreationDate(LocalDate creationDate) {
+    public void setCreationDate(LocalDateTime creationDate) {
         this.creationDate = creationDate;
     }
 
-    public LocalDate getLastModifiedDate() {
+    public LocalDateTime getLastModifiedDate() {
         return lastModifiedDate;
     }
 
-    public void setLastModifiedDate(LocalDate lastModifiedDate) {
+    public void setLastModifiedDate(LocalDateTime lastModifiedDate) {
         this.lastModifiedDate = lastModifiedDate;
     }
 

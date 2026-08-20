@@ -2,8 +2,6 @@ package org.generation.italy.model.entities;
 
 import jakarta.persistence.*;
 
-import java.util.Arrays;
-
 @Entity
 @Table(name = "admin")
 public class Admin {
@@ -11,7 +9,7 @@ public class Admin {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true, length = 50)
+    @Column(nullable = false, length = 50)
     private String name;
 
     @Column(name = "password_hash", nullable = false, length = 120)

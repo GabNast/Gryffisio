@@ -1,7 +1,7 @@
 package org.generation.italy.security;
 
 import com.nimbusds.jose.jwk.source.ImmutableSecret;
-import org.generation.italy.model.repositories.AppUserRepository;
+import org.generation.italy.model.repositories.AdminRepository;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -114,8 +114,8 @@ public class SecurityConfig {
     }
 
     @Bean
-    public UserDetailsService userDetailsService(AppUserRepository appUserRepository) {
-        return new AppUserDetailsService(appUserRepository);
+    public UserDetailsService userDetailsService(AdminRepository adminRepository) {
+        return new AppUserDetailsService(adminRepository);
     }
 
     @Bean

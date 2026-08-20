@@ -7,7 +7,7 @@ import org.generation.italy.model.dto.UserDto;
 import org.generation.italy.model.entities.Admin;
 import org.generation.italy.model.exceptions.BadRequestException;
 import org.generation.italy.model.exceptions.ConflictException;
-import org.generation.italy.model.repositories.AppUserRepository;
+import org.generation.italy.model.repositories.AdminRepository;
 import org.generation.italy.security.JwtService;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -16,24 +16,20 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.generation.italy.model.exceptions.NotFoundException;
 
-import java.util.Locale;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 @Service
 public class AuthService {
-    private final AppUserRepository appUserRepository;
+    private final AdminRepository adminRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
 
     public AuthService(
-            AppUserRepository appUserRepository,
+            AdminRepository adminRepository,
             PasswordEncoder passwordEncoder,
             AuthenticationManager authenticationManager,
             JwtService jwtService
     ) {
-        this.appUserRepository = appUserRepository;
+        this.adminRepository = adminRepository;
         this.passwordEncoder = passwordEncoder;
         this.authenticationManager = authenticationManager;
         this.jwtService = jwtService;
@@ -45,7 +41,7 @@ public class AuthService {
                 new UsernamePasswordAuthenticationToken(request.name(), request.password())
         );
 
-        Admin user = appUserRepository.findByName(request.name())
+        Admin user = adminRepository.findByName(request.name())
                 .orElseThrow(() -> new NotFoundException("user_not_found", "User not found: " + request.name()));
 
         String token = jwtService.createToken(user);
@@ -60,7 +56,7 @@ public class AuthService {
         if (request.password() == null || request.password().isBlank()) {
             throw new BadRequestException("invalid_request", "Password is required");
         }
-        if (appUserRepository.existsByName(request.name())) {
+        if (adminRepository.existsByName(request.name())) {
             throw new ConflictException("username_unavailable", "Username already exists: " + request.name());
         }
 
@@ -69,7 +65,7 @@ public class AuthService {
         user.setName(request.name());
         user.setPasswordHash(passwordEncoder.encode(request.password()));
 
-        Admin saved = appUserRepository.save(user);
+        Admin saved = adminRepository.save(user);
         return new UserDto(
                 saved.getId(),
                 saved.getName()

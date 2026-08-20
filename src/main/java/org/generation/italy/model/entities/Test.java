@@ -11,7 +11,6 @@ import java.util.Set;
 public class Test {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
-    @Column(name="id")
     private Long id;
 
     @Column(nullable = false, length = 128)
@@ -20,8 +19,8 @@ public class Test {
     @ManyToMany
     @JoinTable(
             name="test_to_domain",
-            joinColumns = @JoinColumn(name = "domain_id"),
-            inverseJoinColumns = @JoinColumn(name="test_id")
+            inverseJoinColumns = @JoinColumn(name="test_id"),
+            joinColumns = @JoinColumn(name = "domain_id")
     )
     private Set<Domain> domains = new HashSet<>();
 

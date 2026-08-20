@@ -7,7 +7,6 @@ import jakarta.persistence.*;
 public class ReferringDoctor {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
-    @Column(name="id")
     private Long id;
 
     @Column(nullable = false, length = 20)
@@ -16,8 +15,8 @@ public class ReferringDoctor {
     @Column(nullable = false, length = 20)
     private String surname;
 
-    @Column(nullable = false)
-    private char gender;
+    @Column(columnDefinition = "\"char\"")
+    private Character gender;
 
     public ReferringDoctor(Long id, String name, String surname, char gender) {
         this.id = id;
