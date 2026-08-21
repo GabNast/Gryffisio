@@ -19,8 +19,8 @@ public class Test {
     @ManyToMany
     @JoinTable(
             name="test_to_domain",
-            inverseJoinColumns = @JoinColumn(name="test_id"),
-            joinColumns = @JoinColumn(name = "domain_id")
+            joinColumns = @JoinColumn(name="test_id"),
+            inverseJoinColumns = @JoinColumn(name = "domain_id")
     )
     private Set<Domain> domains = new HashSet<>();
 

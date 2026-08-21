@@ -30,7 +30,7 @@ public class Registration {
     @JoinColumn(name = "subject_type_id", nullable = false)
     private SubjectType subjectType;
 
-    @Column(name="date",nullable = false)
+    @Column(name="date",nullable = true)
     private LocalDate date;
 
     @Column(name="duration_minutes", nullable = false)

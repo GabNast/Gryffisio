@@ -18,7 +18,7 @@ public class ReferringDoctor {
     @Column(columnDefinition = "\"char\"")
     private Character gender;
 
-    public ReferringDoctor(Long id, String name, String surname, char gender) {
+    public ReferringDoctor(Long id, String name, String surname, Character gender) {
         this.id = id;
         this.name = name;
         this.surname = surname;
@@ -52,11 +52,11 @@ public class ReferringDoctor {
         this.surname = surname;
     }
 
-    public char getGender() {
+    public Character getGender() {
         return gender;
     }
 
-    public void setGender(char gender) {
+    public void setGender(Character gender) {
         this.gender = gender;
     }
 }
