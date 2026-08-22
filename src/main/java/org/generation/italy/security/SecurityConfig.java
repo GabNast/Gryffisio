@@ -68,12 +68,19 @@ public class SecurityConfig {
         return jwtAuthenticationConverter;
     }
 
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthenticationConverter jwtAuthenticationConverter) throws Exception {
         return http
                 .cors(cors -> {})
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                //-------------------------------
+                // ------------------------------
+                //sistemare questi filtri qua sotto (post per registrazioni possono farle tutti,
+                // lettura tutti, il resto solo l'admin, giusto?
+                //-------------------------------
+                // ------------------------------
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/auth/users").permitAll()
