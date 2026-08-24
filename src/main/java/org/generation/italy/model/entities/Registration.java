@@ -22,13 +22,9 @@ public class Registration {
     @JoinColumn(name = "project_id", nullable = false)
     private Project project;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "referring_doctor_id")
     private ReferringDoctor referringDoctor;
-
-    @ManyToOne
-    @JoinColumn(name = "subject_type_id", nullable = false)
-    private SubjectType subjectType;
 
     @Column(name="date",nullable = true)
     private LocalDate date;
@@ -47,6 +43,10 @@ public class Registration {
 
     @Column(name="is_modified", nullable = false)
     private Boolean isModified = false;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "patient_id", nullable = false)
+    private Patient patient;
 
     @ManyToMany
     @JoinTable(
@@ -73,12 +73,11 @@ public class Registration {
     )
     private Set<Test> tests = new HashSet<>();
 
-    public Registration(Long id, Domain domain, Project project, ReferringDoctor referringDoctor, SubjectType subjectType, LocalDate date, Integer durationMinutes, String session, LocalDateTime creationDate, LocalDateTime lastModifiedDate, Boolean isModified, Set<Researcher> researchers, Set<Patient> patients, Set<Test> tests) {
+    public Registration(Long id, Domain domain, Project project, ReferringDoctor referringDoctor, LocalDate date, Integer durationMinutes, String session, LocalDateTime creationDate, LocalDateTime lastModifiedDate, Boolean isModified, Set<Researcher> researchers, Set<Patient> patients, Set<Test> tests, Patient patient) {
         this.id = id;
         this.domain = domain;
         this.project = project;
         this.referringDoctor = referringDoctor;
-        this.subjectType = subjectType;
         this.date = date;
         this.durationMinutes = durationMinutes;
         this.session = session;
@@ -88,9 +87,18 @@ public class Registration {
         this.researchers = researchers;
         this.patients = patients;
         this.tests = tests;
+        this.patient = patient;
     }
 
     public Registration() {
+    }
+
+    public Patient getPatient() {
+        return patient;
+    }
+
+    public void setPatient(Patient patient) {
+        this.patient = patient;
     }
 
     public Long getId() {
@@ -123,14 +131,6 @@ public class Registration {
 
     public void setReferringDoctor(ReferringDoctor referringDoctor) {
         this.referringDoctor = referringDoctor;
-    }
-
-    public SubjectType getSubjectType() {
-        return subjectType;
-    }
-
-    public void setSubjectType(SubjectType subjectType) {
-        this.subjectType = subjectType;
     }
 
     public LocalDate getDate() {

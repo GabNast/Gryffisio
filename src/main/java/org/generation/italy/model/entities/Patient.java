@@ -13,18 +13,13 @@ public class Patient {
     @Column(name="patient_code", nullable = false)
     private Integer patientCode;
 
-    @ManyToOne
-    @JoinColumn(name="project_id", nullable = false)
-    private Project project;
-
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name="subject_type_id", nullable = false)
     private SubjectType subjectType;
 
-    public Patient(Long id, Integer patientCode, Project project, SubjectType subjectType) {
+    public Patient(Long id, Integer patientCode, SubjectType subjectType) {
         this.id = id;
         this.patientCode = patientCode;
-        this.project = project;
         this.subjectType = subjectType;
     }
 
@@ -45,14 +40,6 @@ public class Patient {
 
     public void setPatientCode(Integer patientCode) {
         this.patientCode = patientCode;
-    }
-
-    public Project getProject() {
-        return project;
-    }
-
-    public void setProject(Project project) {
-        this.project = project;
     }
 
     public SubjectType getSubjectType() {
