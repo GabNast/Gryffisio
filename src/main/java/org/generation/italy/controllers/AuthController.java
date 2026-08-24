@@ -7,6 +7,7 @@ import org.generation.italy.model.dto.LoginResponse;
 import org.generation.italy.model.dto.UserDto;
 import org.generation.italy.services.AuthService;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -31,7 +32,6 @@ public class AuthController {
 
     @PostMapping("/users")
     @ResponseStatus(HttpStatus.CREATED)
-   // @PreAuthorize("hasRole('HEAD')")
     public UserDto createUser(@Valid @RequestBody CreateUserRequest request) {
         return authService.createUser(request);
     }
