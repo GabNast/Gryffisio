@@ -1,7 +1,6 @@
-package org.generation.italy.controllers;
+package org.generation.italy.dashboard;
 
-import org.generation.italy.model.dto.DashboardData;
-import org.generation.italy.services.Dashboard;
+import org.generation.italy.dashboard.dto.DashboardData;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,10 +12,10 @@ import org.springframework.web.bind.annotation.RestController;
 @PreAuthorize("hasRole('ADMIN')")
 public class DashboardController {
 
-    private final Dashboard dashboard;
+    private final DashboardService dashboardService;
 
-    public DashboardController(Dashboard dashboard) {
-        this.dashboard = dashboard;
+    public DashboardController(DashboardService dashboardService) {
+        this.dashboardService = dashboardService;
     }
 
     /**
@@ -27,6 +26,6 @@ public class DashboardController {
     @GetMapping
     public DashboardData getDashboardData(
             @RequestParam(required = false) Long projectId) {
-        return dashboard.getDashboardData(projectId);
+        return dashboardService.getDashboardData(projectId);
     }
 }

@@ -1,4 +1,4 @@
-package org.generation.italy.model.dto;
+package org.generation.italy.dashboard.dto;
 
 /** Dashboard counters and worked hours for one intervention/evaluation type. */
 public record InterventionTypeSummary(

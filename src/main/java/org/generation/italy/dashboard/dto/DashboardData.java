@@ -1,4 +1,4 @@
-package org.generation.italy.model.dto;
+package org.generation.italy.dashboard.dto;
 
 import java.util.List;
 
