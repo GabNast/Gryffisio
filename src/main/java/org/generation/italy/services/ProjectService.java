@@ -37,7 +37,7 @@ public class ProjectService {
         return toDto(project);
     }
 
-    //ciao
+
     @Transactional
     public ProjectDto createProject(ProjectRequest projectRequest) {
         if (projectRepository.existsByNameIgnoreCase(projectRequest.name())) {
