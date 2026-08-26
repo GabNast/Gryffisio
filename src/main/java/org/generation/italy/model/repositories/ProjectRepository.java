@@ -8,7 +8,9 @@ import java.util.Optional;
 public interface ProjectRepository extends JpaRepository<Project, Long> {
     Optional<Project> findByNameIgnoreCase(String name);
     boolean existsByNameIgnoreCase(String name);
+    boolean existsByNameIgnoreCaseAndIdNot(String name, Long id);
 
     Optional<Project> findByAcronymIgnoreCase(String acronym);
     boolean existsByAcronymIgnoreCase(String acronym);
+    boolean existsByAcronymIgnoreCaseAndIdNot(String acronym, Long id);
 }

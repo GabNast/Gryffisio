@@ -33,14 +33,14 @@ public class DomainService {
     @Transactional(readOnly = true)
     public DomainDto findById(Long id) {
         Domain domain = domainRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("domain_not_found", "Domain not found: " + id));
+                .orElseThrow(() -> new NotFoundException("Domain_not_found", "Domain not found: " + id));
         return toDto(domain);
     }
 
     @Transactional
     public DomainDto create(DomainRequest request) {
         if (domainRepository.existsByNameIgnoreCase(request.name())) {
-            throw new ConflictException("domain_name_unavailable", "Domain name already exists: " + request.name());
+            throw new ConflictException("Domain_name_unavailable", "Domain name already exists: " + request.name());
         }
         Domain domain = new Domain();
         domain.setName(request.name());
@@ -51,10 +51,10 @@ public class DomainService {
     @Transactional
     public DomainDto update(Long id, DomainRequest request) {
         Domain domain = domainRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("domain_not_found", "Domain not found: " + id));
+                .orElseThrow(() -> new NotFoundException("Domain_not_found", "Domain not found: " + id));
 
         if (domainRepository.existsByNameIgnoreCaseAndIdNot(request.name(), id)) {
-            throw new ConflictException("domain_name_unavailable", "Domain name already exists: " + request.name());
+            throw new ConflictException("Domain_name_unavailable", "Domain name already exists: " + request.name());
         }
 
         domain.setName(request.name());
@@ -64,7 +64,7 @@ public class DomainService {
     @Transactional
     public void delete(Long id) {
         if (!domainRepository.existsById(id)) {
-            throw new NotFoundException("domain_not_found", "Domain not found: " + id);
+            throw new NotFoundException("Domain_not_found", "Domain not found: " + id);
         }
         domainRepository.deleteById(id);
     }

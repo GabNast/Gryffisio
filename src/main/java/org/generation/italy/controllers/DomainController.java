@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/domains")
+@RequestMapping("/api/domain")
 public class DomainController {
     private final DomainService domainService;
 
