@@ -103,7 +103,7 @@ CREATE TABLE IF NOT EXISTS public.registration_request_modification
     admin_manager bigint,
     date date,
     duration integer,
-    registration_id bigint,
+    registration_id bigint NOT NULL,
     CONSTRAINT request_modification_pkey PRIMARY KEY (id)
     );
 
