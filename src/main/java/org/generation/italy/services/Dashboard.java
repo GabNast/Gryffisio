@@ -1,6 +1,10 @@
 package org.generation.italy.services;
 
 import jakarta.persistence.EntityManager;
+import org.generation.italy.model.dto.DashboardData;
+import org.generation.italy.model.dto.InterventionTypeSummary;
+import org.generation.italy.model.dto.OperatorSummary;
+import org.generation.italy.model.dto.ProjectSummary;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -48,7 +52,12 @@ public class Dashboard {
                         """, projectId)
         );
     }
-
+    //La query restituisce una lista "raw" perchè jpa non conosce il tipo di ritorno,
+    //siccome ogni riga ha più colonne sarà rappresentata come un array di oggetti (Object[]),
+    //quindi la lista sarà List<Object[]> ma java ci segnalerà un warning di tipo "unchecked" perchè non può garantire
+    // il tipo di ritorno, quindi lo sopprimiamo con @SuppressWarnings("unchecked"),
+    //il codice funzionerebbe lo stesso senza l'annotazione ma è buona pratica sopprimere i warning
+    // quando sappiamo che il codice è corretto.
     @SuppressWarnings("unchecked")
     private List<OperatorSummary> operatorSummaries() {
         List<Object[]> rows = entityManager.createNativeQuery("""
@@ -121,29 +130,4 @@ public class Dashboard {
         return Math.round((minutes / 60.0) * 100.0) / 100.0;
     }
 
-    public record DashboardData(
-            long totalInterventions,
-            long totalEvaluations,
-            ProjectSummary selectedProject,
-            List<OperatorSummary> operators,
-            List<InterventionTypeSummary> interventionTypes) {
-    }
-
-    public record ProjectSummary(long projectId, long interventions, long evaluations) {
-    }
-
-    public record OperatorSummary(
-            long operatorId,
-            String operatorName,
-            long interventions,
-            long evaluations,
-            double totalHours) {
-    }
-
-    public record InterventionTypeSummary(
-            long sessionTypeId,
-            String sessionTypeName,
-            long evaluations,
-            double totalHours) {
-    }
 }
