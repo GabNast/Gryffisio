@@ -1,16 +1,10 @@
 package org.generation.italy.model.entities;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
-@Table(name = "researcher")
+@Table(name="researcher")
 public class Researcher {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -21,21 +15,21 @@ public class Researcher {
     @Column(nullable = false, length = 30)
     private String surname;
 
-    @Column(name = "is_student", nullable = false)
-    private Boolean student = false;
+    @Column(name="is_student", nullable = false)
+    private boolean isStudent=false;
 
-    @Column(name = "is_active", nullable = false)
-    private Boolean active = true;
+    @Column(name="is_active", nullable = false)
+    private boolean isActive=true;
 
-    public Researcher() {
-    }
-
-    public Researcher(Long id, String name, String surname, Boolean student, Boolean active) {
+    public Researcher(Long id, String name, String surname, boolean isStudent, boolean isActive) {
         this.id = id;
         this.name = name;
         this.surname = surname;
-        this.student = student;
-        this.active = active;
+        this.isStudent = isStudent;
+        this.isActive = isActive;
+    }
+
+    public Researcher() {
     }
 
     public Long getId() {
@@ -62,19 +56,19 @@ public class Researcher {
         this.surname = surname;
     }
 
-    public Boolean getStudent() {
-        return student;
+    public boolean isStudent() {
+        return isStudent;
     }
 
-    public void setStudent(Boolean student) {
-        this.student = student;
+    public void setStudent(boolean student) {
+        isStudent = student;
     }
 
-    public Boolean getActive() {
-        return active;
+    public boolean isActive() {
+        return isActive;
     }
 
-    public void setActive(Boolean active) {
-        this.active = active;
+    public void setActive(boolean active) {
+        isActive = active;
     }
 }
