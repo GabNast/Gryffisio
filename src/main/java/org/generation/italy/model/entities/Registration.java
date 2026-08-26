@@ -22,9 +22,6 @@ public class Registration {
     @JoinColumn(name = "project_id", nullable = false)
     private Project project;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "referring_doctor_id")
-    private ReferringDoctor referringDoctor;
 
     @Column(name="date",nullable = true)
     private LocalDate date;
@@ -32,8 +29,9 @@ public class Registration {
     @Column(name="duration_minutes", nullable = false)
     private Integer durationMinutes;
 
-    @Column(nullable = false, columnDefinition = "TEXT")
-    private String session;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "referring_doctor_id")
+    private ReferringDoctor referringDoctor;
 
     @Column(name="creation_date", nullable = false)
     private LocalDateTime creationDate;
@@ -73,14 +71,13 @@ public class Registration {
     )
     private Set<Test> tests = new HashSet<>();
 
-    public Registration(Long id, Domain domain, Project project, ReferringDoctor referringDoctor, LocalDate date, Integer durationMinutes, String session, LocalDateTime creationDate, LocalDateTime lastModifiedDate, Boolean isModified, Set<Researcher> researchers, Set<Patient> patients, Set<Test> tests, Patient patient) {
+    public Registration(Long id, Domain domain, Project project, ReferringDoctor referringDoctor, LocalDate date, Integer durationMinutes, LocalDateTime creationDate, LocalDateTime lastModifiedDate, Boolean isModified, Set<Researcher> researchers, Set<Patient> patients, Set<Test> tests, Patient patient) {
         this.id = id;
         this.domain = domain;
         this.project = project;
         this.referringDoctor = referringDoctor;
         this.date = date;
         this.durationMinutes = durationMinutes;
-        this.session = session;
         this.creationDate = creationDate;
         this.lastModifiedDate = lastModifiedDate;
         this.isModified = isModified;
@@ -147,14 +144,6 @@ public class Registration {
 
     public void setDurationMinutes(Integer durationMinutes) {
         this.durationMinutes = durationMinutes;
-    }
-
-    public String getSession() {
-        return session;
-    }
-
-    public void setSession(String session) {
-        this.session = session;
     }
 
     public LocalDateTime getCreationDate() {

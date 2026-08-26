@@ -17,15 +17,12 @@ public class RegistrationRequestModification {
     @JoinColumn(name = "requesting_researcher_id", nullable = false)
     private Researcher requestingResearcher;
 
-    // "char" NOT NULL -> probabile stato tipo 'P'/'A'/'R'.
-    // Valuta di sostituirlo con un enum + @Convert se i valori ammessi sono fissi.
     @Column(name = "state", nullable = false)
     private Character state;
 
     @Column(name = "requested_date", nullable = false)
     private LocalDate requestedDate;
 
-    // nullable: valorizzato quando un admin gestisce la richiesta
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "admin_manager")
     private Admin adminManager;
@@ -36,9 +33,8 @@ public class RegistrationRequestModification {
     @Column(name = "duration")
     private Integer duration;
 
-    // nullable: la richiesta puo' non essere ancora legata a una registration esistente
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "registration_id")
+    @JoinColumn(name = "registration_id", nullable = false)
     private Registration registration;
 
     public RegistrationRequestModification() {
