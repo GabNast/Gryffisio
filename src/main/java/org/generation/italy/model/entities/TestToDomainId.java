@@ -5,7 +5,9 @@ import jakarta.persistence.*;
 import java.io.Serializable;
 import java.util.Objects;
 
+@Embeddable
 public class TestToDomainId implements Serializable {
+
     @Column(name = "test_id")
     private Long testId;
 

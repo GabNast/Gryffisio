@@ -5,7 +5,9 @@ import jakarta.persistence.*;
 import java.io.Serializable;
 import java.util.Objects;
 
+@Embeddable
 public class RegistrationSubjectId implements Serializable {
+
     @Column(name = "registration_id")
     private Long registrationId;
 

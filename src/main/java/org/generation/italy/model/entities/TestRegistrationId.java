@@ -1,10 +1,13 @@
 package org.generation.italy.model.entities;
+
 import jakarta.persistence.*;
 
 import java.io.Serializable;
 import java.util.Objects;
 
-public class TestRegistrationId implements Serializable{
+@Embeddable
+public class TestRegistrationId implements Serializable {
+
     @Column(name = "registration_id")
     private Long registrationId;
 
