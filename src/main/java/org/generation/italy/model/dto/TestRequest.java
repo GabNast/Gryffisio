@@ -6,6 +6,7 @@ import org.generation.italy.model.entities.Domain;
 
 import java.util.Set;
 
+//ciao
 public record TestRequest(
         @NotBlank
         @Size(max=128)
