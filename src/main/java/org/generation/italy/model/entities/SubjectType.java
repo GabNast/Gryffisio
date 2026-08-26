@@ -1,27 +1,33 @@
 package org.generation.italy.model.entities;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 @Entity
-@Table(name="subject_type")
+@Table(name = "subject_type")
 public class SubjectType {
+
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 50)
+    @Column(name = "type", nullable = false, length = 50)
     private String type;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(name = "description", columnDefinition = "text")
     private String description;
+
+    public SubjectType() {
+    }
 
     public SubjectType(Long id, String type, String description) {
         this.id = id;
         this.type = type;
         this.description = description;
-    }
-
-    public SubjectType() {
     }
 
     public Long getId() {

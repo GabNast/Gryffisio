@@ -1,27 +1,33 @@
 package org.generation.italy.model.entities;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 @Entity
-@Table(name="project")
+@Table(name = "project")
 public class Project {
+
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 255)
+    @Column(nullable = false)
     private String name;
 
     @Column(nullable = false, length = 5)
     private String acronym;
 
+    public Project() {
+    }
+
     public Project(Long id, String name, String acronym) {
         this.id = id;
         this.name = name;
         this.acronym = acronym;
-    }
-
-    public Project() {
     }
 
     public Long getId() {
