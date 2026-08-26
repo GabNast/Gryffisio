@@ -21,6 +21,7 @@ public class RegistrationSubject {
     public RegistrationSubject() {
     }
 
+
     public RegistrationSubject(RegistrationSubjectId id, Registration registration, Patient patient) {
         this.id = id;
         this.registration = registration;
