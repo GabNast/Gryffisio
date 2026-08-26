@@ -36,9 +36,8 @@ public class RegistrationRequestModification {
     @Column(name = "duration")
     private Integer duration;
 
-    // nullable: la richiesta puo' non essere ancora legata a una registration esistente
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "registration_id")
+    @JoinColumn(name = "registration_id",nullable = false)
     private Registration registration;
 
     public RegistrationRequestModification() {
