@@ -22,7 +22,6 @@ public class Registration {
     @JoinColumn(name = "project_id", nullable = false)
     private Project project;
 
-
     @Column(name="date",nullable = true)
     private LocalDate date;
 
