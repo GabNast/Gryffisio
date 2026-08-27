@@ -2,15 +2,13 @@ package org.generation.italy.model.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import org.generation.italy.model.entities.Domain;
 
-import java.util.Set;
+import java.util.List;
 
-//ciao
 public record TestRequest(
         @NotBlank
-        @Size(max=128)
+        @Size(max = 128)
         String name,
 
-        Set<Long> domainIds
+        List<Long> domainIds
 ) {}
