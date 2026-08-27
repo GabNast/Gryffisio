@@ -9,7 +9,6 @@ public record RegistrationRequestModificationDto(
         Character state,
         LocalDate requestedDate,
        // Long adminManagerId || riga 30,per vedere chi degli admin ha approvato/disapprovato: no perchè se no l'utente decide l'admin, grz chia
-        LocalDate date,
         Integer duration,
         Long registrationId,
         List<RegistrationRequestEvaluationDto> evaluations
