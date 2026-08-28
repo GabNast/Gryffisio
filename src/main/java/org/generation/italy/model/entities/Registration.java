@@ -39,6 +39,9 @@ public class Registration {
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+
     @ManyToMany
     @JoinTable(
             name = "registration_operators",
@@ -65,7 +68,7 @@ public class Registration {
 
     public Registration() {}
 
-    public Registration(Long id, Project project, Domain domain, Session session, Doctor doctor, LocalDate activityDate, Integer durationMinutes, LocalDateTime createdAt, Set<Operator> operators, Set<Subject> subjects, Set<Activity> activities) {
+    public Registration(Long id, Project project, Domain domain, Session session, Doctor doctor, LocalDate activityDate, Integer durationMinutes, LocalDateTime createdAt, Set<Operator> operators, Set<Subject> subjects, Set<Activity> activities,  LocalDateTime updatedAt) {
         this.id = id;
         this.project = project;
         this.domain = domain;
@@ -77,6 +80,7 @@ public class Registration {
         this.operators = operators;
         this.subjects = subjects;
         this.activities = activities;
+        this.updatedAt = updatedAt;
     }
 
     public Long getId() { return id; }
@@ -101,4 +105,6 @@ public class Registration {
     public void setSubjects(Set<Subject> subjects) { this.subjects = subjects; }
     public Set<Activity> getActivities() { return activities; }
     public void setActivities(Set<Activity> activities) { this.activities = activities; }
+    public LocalDateTime getUpdatedAt() { return updatedAt; }
+    public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
 }

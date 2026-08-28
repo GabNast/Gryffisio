@@ -117,6 +117,7 @@ CREATE TABLE IF NOT EXISTS public.registrations
     activity_date date NOT NULL,
     duration_minutes integer NOT NULL,
     created_at timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone,
     CONSTRAINT registrations_pkey PRIMARY KEY (id)
 );
 
