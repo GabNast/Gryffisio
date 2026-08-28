@@ -23,4 +23,5 @@ public interface RegistrationRepository extends JpaRepository<Registration, Long
         ORDER BY d.name 
     """)
     List<DomainMatricsProjection> findDomainMatrics();
+    long countByProject_Id (Integer projectId);
 }
