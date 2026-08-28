@@ -96,6 +96,8 @@ public class SecurityConfig {
 
                         // Registration: creazione e lettura pubbliche, modifica/cancellazione solo admin
                         .requestMatchers(HttpMethod.POST, "/api/registrations").permitAll()
+                        // Export CSV esporta l'intero archivio per cui solo admin
+                        .requestMatchers(HttpMethod.GET, "/api/registrations/export").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/api/registrations/**").permitAll()
 
                         // Modification requests: chiunque propone, solo admin legge/decide

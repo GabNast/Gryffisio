@@ -24,6 +24,8 @@ public class RegistrationController {
         this.registrationExportService = registrationExportService;
     }
 
+    // TODO(security): endpoint attualmente pubblico. Esporta l'INTERO archivio,
+    // quindi va protetto con hasRole("ADMIN") quando si sistema SecurityConfig.
     @GetMapping("/export")
     public ResponseEntity<byte[]> export() {
         byte[] csv = registrationExportService.exportCsv();
