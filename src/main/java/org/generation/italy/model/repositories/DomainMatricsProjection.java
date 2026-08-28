@@ -2,7 +2,7 @@ package org.generation.italy.model.repositories;
 
 public interface DomainMatricsProjection {
     Integer getDomainId();
-    Long getDomainName();
+    String getDomainName();
     Long getRegistrationCount();
     Long getTotalMinutes();
 }

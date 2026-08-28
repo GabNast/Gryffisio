@@ -3,6 +3,7 @@ package org.generation.italy.services;
 
 import org.generation.italy.model.dto.DashboardDto;
 import org.generation.italy.model.dto.DomainMatricsDto;
+import org.generation.italy.model.dto.OperatorMatricsDto;
 import org.generation.italy.model.repositories.RegistrationRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,8 +19,29 @@ public class DashboardService {
     }
 
     @Transactional(readOnly = true)
-    public DashboardDto getDashboard(Integer projectId){
+    public DashboardDto getDashboard(Integer projectId) {
         long total = registrationRepository.count();
-        Long projectCount = projectId !=null ? registrationRepository.countByProject_Id(projectId):null;
-        List<DomainMatricsDto> domainMatrics =
+        Long projectCount = projectId != null ? registrationRepository.countByProject_Id(projectId) : null;
+        List<DomainMatricsDto> domainMatrics = registrationRepository.findDomainMatrics().stream()
+                .map(row -> new DomainMatricsDto(
+                        row.getDomainId(),
+                        row.getDomainName(),
+                        row.getRegistrationCount(),
+                        minutesToHours(row.getTotalMinutes())
+                ))
+                .toList();
+        List<OperatorMatricsDto> operatorMatrics = registrationRepository.findOperationMatrics().stream()
+                .map(row -> new OperatorMatricsDto(
+                        row.getOperatorId(),
+                        row.getOperatorName(),
+                        row.getRegistrationCount(),
+                        minutesToHours(row.getTotalMinutes())
+                ))
+                .toList();
+        return new DashboardDto(total,projectCount,operatorMatrics,domainMatrics);
+    }
+
+    public double minutesToHours (long minutes){
+        return Math.round((minutes/60.0)*100.0)/100.0;
+    }
 }
