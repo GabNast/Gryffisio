@@ -51,10 +51,9 @@ public class RegistrationExportService {
                         .map(Subject::getCode)
                         .collect(Collectors.joining("; ")),
 
-                // tipologia_soggetto (lista senza ripetizioni)
+                // tipologia_soggetto (lista)
                 reg.getSubjects().stream()
                         .map(s -> s.getSubjectType().getType())
-                        .distinct()
                         .collect(Collectors.joining("; ")),
 
                 // sessione
