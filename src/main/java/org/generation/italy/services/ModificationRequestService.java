@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class ModificationRequestService {
@@ -21,18 +22,21 @@ public class ModificationRequestService {
     private final SessionRepository sessionRepository;
     private final DoctorRepository doctorRepository;
 
+    private final AuditLogService auditLogService;
+
     public ModificationRequestService(
             ModificationRequestRepository modificationRequestRepository,
             RegistrationRepository registrationRepository,
             OperatorRepository operatorRepository,
             SessionRepository sessionRepository,
-            DoctorRepository doctorRepository
+            DoctorRepository doctorRepository, AuditLogService auditLogService
     ) {
         this.modificationRequestRepository = modificationRequestRepository;
         this.registrationRepository = registrationRepository;
         this.operatorRepository = operatorRepository;
         this.sessionRepository = sessionRepository;
         this.doctorRepository = doctorRepository;
+        this.auditLogService = auditLogService;
     }
 
     private ModificationRequestDto toDto(ModificationRequest mr) {
@@ -148,6 +152,9 @@ public class ModificationRequestService {
 
         mr.setHandledByAdmin(admin);
         mr.setHandledAt(LocalDateTime.now());
+
+        String action = Boolean.TRUE.equals(decision.approve()) ? "APPROVE_MODIFICATION" : "REJECT_MODIFICATION";
+        auditLogService.log(Set.of(admin), action, "ModificationRequest", mr.getId(), mr.getReason());
 
         return toDto(modificationRequestRepository.save(mr));
     }

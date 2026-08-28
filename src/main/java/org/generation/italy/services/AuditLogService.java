@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class AuditLogService {
@@ -19,11 +20,10 @@ public class AuditLogService {
     }
 
     private AuditLogDto toDto(AuditLog log) {
-        Operator operator = log.getOperator();
         return new AuditLogDto(
                 log.getId(),
-                operator != null ? operator.getId() : null,
-                operator != null ? operator.getFirstName() + " " + operator.getLastName() : null,
+                log.getOperators().stream().map(Operator::getId).toList(),
+                log.getOperators().stream().map(o -> o.getFirstName() + " " + o.getLastName()).toList(),
                 log.getAction(),
                 log.getEntityName(),
                 log.getEntityId(),
@@ -32,11 +32,10 @@ public class AuditLogService {
         );
     }
 
-    /** Da chiamare da altri service per registrare un'azione (es. modifica/cancellazione admin). */
     @Transactional
-    public void log(Operator operator, String action, String entityName, Long entityId, String description) {
+    public void log(Set<Operator> operators, String action, String entityName, Long entityId, String description) {
         AuditLog entry = new AuditLog();
-        entry.setOperator(operator);
+        entry.setOperators(operators);
         entry.setAction(action);
         entry.setEntityName(entityName);
         entry.setEntityId(entityId);

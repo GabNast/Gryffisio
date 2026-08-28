@@ -3,6 +3,8 @@ package org.generation.italy.model.entities;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "audit_logs")
@@ -11,9 +13,13 @@ public class AuditLog {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "operator_id")
-    private Operator operator;
+    @ManyToMany
+    @JoinTable(
+            name = "audit_log_operators",
+            joinColumns = @JoinColumn(name = "audit_log_id"),
+            inverseJoinColumns = @JoinColumn(name = "operator_id")
+    )
+    private Set<Operator> operators = new HashSet<>();
 
     @Column(nullable = false, length = 50)
     private String action;
@@ -32,9 +38,9 @@ public class AuditLog {
 
     public AuditLog() {}
 
-    public AuditLog(Long id, Operator operator, String action, String entityName, Long entityId, String description, LocalDateTime createdAt) {
+    public AuditLog(Long id, Set<Operator> operators, String action, String entityName, Long entityId, String description, LocalDateTime createdAt) {
         this.id = id;
-        this.operator = operator;
+        this.operators = operators;
         this.action = action;
         this.entityName = entityName;
         this.entityId = entityId;
@@ -44,8 +50,8 @@ public class AuditLog {
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
-    public Operator getOperator() { return operator; }
-    public void setOperator(Operator operator) { this.operator = operator; }
+    public Set<Operator> getOperators() { return operators; }
+    public void setOperators(Set<Operator> operators) { this.operators = operators; }
     public String getAction() { return action; }
     public void setAction(String action) { this.action = action; }
     public String getEntityName() { return entityName; }
