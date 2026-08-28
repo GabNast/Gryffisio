@@ -1,17 +1,30 @@
 package org.generation.italy.services;
 
 import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVPrinter;
 import org.generation.italy.model.entities.Activity;
 import org.generation.italy.model.entities.Registration;
 import org.generation.italy.model.entities.Subject;
+import org.generation.italy.model.repositories.RegistrationRepository;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
 import java.time.format.DateTimeFormatter;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 public class RegistrationExportService {
+
+    private final RegistrationRepository registrationRepository;
+
+    public RegistrationExportService(RegistrationRepository registrationRepository) {
+        this.registrationRepository = registrationRepository;
+    }
 
     private static final CSVFormat CSV_FORMAT = CSVFormat.DEFAULT.builder()
             .setHeader(
@@ -36,6 +49,11 @@ public class RegistrationExportService {
             DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
     private List<String> toRow(Registration reg) {
+        // ordine fisso dei soggetti (per id): cosi id_soggetto e tipologia_soggetto restano paralleli
+        List<Subject> orderedSubjects = reg.getSubjects().stream()
+                .sorted(Comparator.comparing(Subject::getId))
+                .toList();
+
         return List.of(
                 // id
                 String.valueOf(reg.getId()),
@@ -46,13 +64,13 @@ public class RegistrationExportService {
                 // progetto (obbligatorio)
                 reg.getProject().getName(),
 
-                // id_soggetto (lista)
-                reg.getSubjects().stream()
+                // id_soggetto (ordinati per id)
+                orderedSubjects.stream()
                         .map(Subject::getCode)
                         .collect(Collectors.joining("; ")),
 
-                // tipologia_soggetto (lista)
-                reg.getSubjects().stream()
+                // tipologia_soggetto (stesso ordine, duplicati mantenuti per corrispondenza posizionale)
+                orderedSubjects.stream()
                         .map(s -> s.getSubjectType().getType())
                         .collect(Collectors.joining("; ")),
 
@@ -67,12 +85,12 @@ public class RegistrationExportService {
                 // durata in minuti
                 String.valueOf(reg.getDurationMinutes()),
 
-                // data attività (nullable)
+                // data attività (nullable -> cella vuota se assente)
                 reg.getActivityDate() != null
                         ? reg.getActivityDate().format(DATE_FORMAT)
                         : "",
 
-                // medico (nullable)
+                // medico (nullable -> cella vuota se assente)
                 reg.getDoctor() != null
                         ? reg.getDoctor().getFirstName() + " " + reg.getDoctor().getLastName()
                         : "",
@@ -85,6 +103,24 @@ public class RegistrationExportService {
                 // data/ora creazione (obbligatoria)
                 reg.getCreatedAt().format(DATE_TIME_FORMAT)
         );
+    }
+
+    public byte[] exportCsv() {
+        // registrazioni ordinate per id crescente
+        List<Registration> registrations = registrationRepository.findAll(Sort.by("id"));
+
+        try (StringWriter writer = new StringWriter();
+             CSVPrinter csvPrinter = new CSVPrinter(writer, CSV_FORMAT)) {
+
+            for (Registration registration : registrations) {
+                csvPrinter.printRecord(toRow(registration));
+            }
+
+            return writer.toString().getBytes(StandardCharsets.UTF_8);
+
+        } catch (IOException e) {
+            throw new RuntimeException("Error while generating CSV", e);
+        }
     }
 
 }

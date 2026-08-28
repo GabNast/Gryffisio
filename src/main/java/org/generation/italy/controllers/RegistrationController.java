@@ -3,8 +3,12 @@ package org.generation.italy.controllers;
 import jakarta.validation.Valid;
 import org.generation.italy.model.dto.RegistrationDto;
 import org.generation.italy.model.dto.RegistrationRequest;
+import org.generation.italy.services.RegistrationExportService;
 import org.generation.italy.services.RegistrationService;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -13,9 +17,20 @@ import java.util.List;
 @RequestMapping("/api/registrations")
 public class RegistrationController {
     private final RegistrationService registrationService;
+    private final RegistrationExportService registrationExportService;
 
-    public RegistrationController(RegistrationService registrationService) {
+    public RegistrationController(RegistrationService registrationService, RegistrationExportService registrationExportService) {
         this.registrationService = registrationService;
+        this.registrationExportService = registrationExportService;
+    }
+
+    @GetMapping("/export")
+    public ResponseEntity<byte[]> export() {
+        byte[] csv = registrationExportService.exportCsv();
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"registrazioni.csv\"")
+                .contentType(MediaType.parseMediaType("text/csv; charset=UTF-8"))
+                .body(csv);
     }
 
     @GetMapping("/{id}")
