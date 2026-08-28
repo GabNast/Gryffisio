@@ -1,13 +1,13 @@
 spring:
   application:
-    name: Uniss
+    name: GRYFFISIO
   main:
     banner-mode: off #serve a non generare stampa iniziale quando parte app
   datasource: # quando creiamo app multiutente usiamo connection pool (blocco di conn) instanziate
     #Quando parte l'app. Perché nella maggior parte app backend operaz sono abbastanza flash, quindi
     #costa di più aprire e chiudere connessione, quindi ricicliamo connessioni. Astrazione java
     #per un connection pool si chiama datasource
-    url: ${DB_URL:jdbc:postgresql://localhost:5432/uniss}
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/GRYFFISIO}
     username: ${DB_USER:postgresMaster}
     password: ${DB_PASS:goPostgresGo}
     driver-class-name: org.postgresql.Driver

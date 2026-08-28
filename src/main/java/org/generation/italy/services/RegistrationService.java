@@ -3,7 +3,6 @@ package org.generation.italy.services;
 import org.generation.italy.model.dto.RegistrationDto;
 import org.generation.italy.model.dto.RegistrationRequest;
 import org.generation.italy.model.entities.*;
-import org.generation.italy.model.exceptions.BadRequestException;
 import org.generation.italy.model.exceptions.NotFoundException;
 import org.generation.italy.model.repositories.*;
 import org.springframework.stereotype.Service;
@@ -13,53 +12,55 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
-
 @Service
 public class RegistrationService {
     private final RegistrationRepository registrationRepository;
-    private final DomainRepository domainRepository;
     private final ProjectRepository projectRepository;
-    private final PatientRepository patientRepository;
-    private final ResearcherRepository researcherRepository;
-    private final ReferringDoctorRepository referringDoctorRepository;
-    private final TestRepository testRepository;
+    private final DomainRepository domainRepository;
+    private final SessionRepository sessionRepository;
+    private final DoctorRepository doctorRepository;
+    private final OperatorRepository operatorRepository;
+    private final SubjectRepository subjectRepository;
+    private final ActivityRepository activityRepository;
 
     public RegistrationService(
             RegistrationRepository registrationRepository,
-            DomainRepository domainRepository,
             ProjectRepository projectRepository,
-            PatientRepository patientRepository,
-            ResearcherRepository researcherRepository,
-            ReferringDoctorRepository referringDoctorRepository,
-            TestRepository testRepository
+            DomainRepository domainRepository,
+            SessionRepository sessionRepository,
+            DoctorRepository doctorRepository,
+            OperatorRepository operatorRepository,
+            SubjectRepository subjectRepository,
+            ActivityRepository activityRepository
     ) {
         this.registrationRepository = registrationRepository;
-        this.domainRepository = domainRepository;
         this.projectRepository = projectRepository;
-        this.patientRepository = patientRepository;
-        this.researcherRepository = researcherRepository;
-        this.referringDoctorRepository = referringDoctorRepository;
-        this.testRepository = testRepository;
+        this.domainRepository = domainRepository;
+        this.sessionRepository = sessionRepository;
+        this.doctorRepository = doctorRepository;
+        this.operatorRepository = operatorRepository;
+        this.subjectRepository = subjectRepository;
+        this.activityRepository = activityRepository;
     }
 
     private RegistrationDto toDto(Registration registration) {
+        Doctor doctor = registration.getDoctor();
         return new RegistrationDto(
                 registration.getId(),
-                registration.getDomain().getId(),
-                registration.getDomain().getName(),
-                registration.getDate(),
-                registration.getDurationMinutes(),
                 registration.getProject().getId(),
                 registration.getProject().getName(),
-                registration.getPatient().getId(),
-                registration.getPatient().getPatientCode(),
-                registration.getPatients().stream().map(Patient::getId).toList(),
-                registration.getResearchers().stream().map(Researcher::getId).toList(),
-                registration.getReferringDoctor() != null ? registration.getReferringDoctor().getId() : null,
-                registration.getReferringDoctor() != null ? registration.getReferringDoctor().getName() : null,
-                registration.getTests().stream().map(Test::getId).toList(),
-                registration.getCreationDate(),
-                registration.getModified()
+                registration.getDomain().getId(),
+                registration.getDomain().getName(),
+                registration.getSession().getId(),
+                registration.getSession().getSession(),
+                doctor != null ? doctor.getId() : null,
+                doctor != null ? doctor.getFirstName() + " " + doctor.getLastName() : null,
+                registration.getActivityDate(),
+                registration.getDurationMinutes(),
+                registration.getOperators().stream().map(Operator::getId).toList(),
+                registration.getSubjects().stream().map(Subject::getId).toList(),
+                registration.getActivities().stream().map(Activity::getId).toList(),
+                registration.getCreatedAt()
         );
     }
 
@@ -81,8 +82,7 @@ public class RegistrationService {
     public RegistrationDto createRegistration(RegistrationRequest request) {
         Registration registration = new Registration();
         applyRequest(registration, request);
-        registration.setCreationDate(LocalDateTime.now());
-        registration.setModified(false);
+        registration.setCreatedAt(LocalDateTime.now());
         Registration saved = registrationRepository.save(registration);
         return toDto(saved);
     }
@@ -92,58 +92,49 @@ public class RegistrationService {
         Registration registration = registrationRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Registration_not_found", "Registration not found: " + id));
         applyRequest(registration, request);
-        registration.setLastModifiedDate(LocalDateTime.now());
-        registration.setModified(true);
         return toDto(registrationRepository.save(registration));
     }
 
-    // Metodo privato condiviso con Create e Update che evita di duplicare tutta la logica di risoluzione delle relazioni 2 volte.
     private void applyRequest(Registration registration, RegistrationRequest request) {
-        Domain domain = domainRepository.findById(request.domainId())
-                .orElseThrow(() -> new NotFoundException("Domain_not_found", "Domain not found: " + request.domainId()));
-
         Project project = projectRepository.findById(request.projectId())
                 .orElseThrow(() -> new NotFoundException("Project_not_found", "Project not found: " + request.projectId()));
 
-        Patient patient = patientRepository.findById(request.patientId())
-                .orElseThrow(() -> new NotFoundException("Patient_not_found", "Patient not found: " + request.patientId()));
+        Domain domain = domainRepository.findById(request.domainId())
+                .orElseThrow(() -> new NotFoundException("Domain_not_found", "Domain not found: " + request.domainId()));
 
-        Set<Researcher> researchers = Set.copyOf(researcherRepository.findAllById(request.researcherIds()));
-        if (researchers.size() != Set.copyOf(request.researcherIds()).size()) {
-            throw new NotFoundException("Researcher_not_found", "One or more researcher ids do not exist");
+        Session session = sessionRepository.findById(request.sessionId())
+                .orElseThrow(() -> new NotFoundException("Session_not_found", "Session not found: " + request.sessionId()));
+
+        Doctor doctor = null;
+        if (request.doctorId() != null) {
+            doctor = doctorRepository.findById(request.doctorId())
+                    .orElseThrow(() -> new NotFoundException("Doctor_not_found", "Doctor not found: " + request.doctorId()));
         }
 
-        Set<Test> tests = Set.copyOf(testRepository.findAllById(request.testIds()));
-        if (tests.size() != Set.copyOf(request.testIds()).size()) {
-            throw new NotFoundException("Test_not_found", "One or more test ids do not exist");
+        Set<Operator> operators = Set.copyOf(operatorRepository.findAllById(request.operatorIds()));
+        if (operators.size() != Set.copyOf(request.operatorIds()).size()) {
+            throw new NotFoundException("Operator_not_found", "One or more operator ids do not exist");
         }
 
-        Set<Patient> additionalPatients = Set.of();
-        if (request.additionalPatientIds() != null && !request.additionalPatientIds().isEmpty()) {
-            if (request.additionalPatientIds().contains(request.patientId())) {
-                throw new BadRequestException("Duplicate_patient_id", "Primary patient cannot also be listed as an additional patient");
-            }
-            additionalPatients = Set.copyOf(patientRepository.findAllById(request.additionalPatientIds()));
-            if (additionalPatients.size() != Set.copyOf(request.additionalPatientIds()).size()) {
-                throw new NotFoundException("Patient_not_found", "One or more additional patient ids do not exist");
-            }
+        Set<Subject> subjects = Set.copyOf(subjectRepository.findAllById(request.subjectIds()));
+        if (subjects.size() != Set.copyOf(request.subjectIds()).size()) {
+            throw new NotFoundException("Subject_not_found", "One or more subject ids do not exist");
         }
 
-        ReferringDoctor referringDoctor = null;
-        if (request.referringDoctorId() != null) {
-            referringDoctor = referringDoctorRepository.findById(request.referringDoctorId())
-                    .orElseThrow(() -> new NotFoundException("Referring_doctor_not_found", "Referring doctor not found: " + request.referringDoctorId()));
+        Set<Activity> activities = Set.copyOf(activityRepository.findAllById(request.activityIds()));
+        if (activities.size() != Set.copyOf(request.activityIds()).size()) {
+            throw new NotFoundException("Activity_not_found", "One or more activity ids do not exist");
         }
 
-        registration.setDomain(domain);
         registration.setProject(project);
-        registration.setPatient(patient);
-        registration.setResearchers(researchers);
-        registration.setTests(tests);
-        registration.setPatients(additionalPatients);
-        registration.setReferringDoctor(referringDoctor);
-        registration.setDate(request.date());
+        registration.setDomain(domain);
+        registration.setSession(session);
+        registration.setDoctor(doctor);
+        registration.setActivityDate(request.activityDate());
         registration.setDurationMinutes(request.durationMinutes());
+        registration.setOperators(operators);
+        registration.setSubjects(subjects);
+        registration.setActivities(activities);
     }
 
     @Transactional

@@ -1,7 +1,7 @@
 package org.generation.italy.security;
 
 import com.nimbusds.jose.jwk.source.ImmutableSecret;
-import org.generation.italy.model.repositories.AdminRepository;
+import org.generation.italy.model.repositories.OperatorRepository;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -75,17 +75,34 @@ public class SecurityConfig {
                 .cors(cors -> {})
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                //-------------------------------
-                // ------------------------------
-                //sistemare questi filtri qua sotto (post per registrazioni possono farle tutti,
-                // lettura tutti, il resto solo l'admin, giusto?
-                //-------------------------------
-                // ------------------------------
                 .authorizeHttpRequests(auth -> auth
+                        // Autenticazione e documentazione
                         .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
                         .requestMatchers("/api/public/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/registration-requests").permitAll()
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
+
+                        // Cataloghi: lettura pubblica, scrittura solo admin
+                        .requestMatchers(HttpMethod.GET, "/api/domains/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/projects/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/doctors/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/sessions/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/subject-types/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/activities/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/operators/**").permitAll()
+
+                        // Subject: lettura e creazione pubbliche (creato al volo dal form), modifica/cancellazione solo admin
+                        .requestMatchers(HttpMethod.GET, "/api/subjects/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/subjects").permitAll()
+
+                        // Registration: creazione e lettura pubbliche, modifica/cancellazione solo admin
+                        .requestMatchers(HttpMethod.POST, "/api/registrations").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/registrations/**").permitAll()
+
+                        // Modification requests: chiunque propone, solo admin legge/decide
+                        .requestMatchers(HttpMethod.POST, "/api/modification-requests").permitAll()
+
+                        // Tutto il resto (scritture sui cataloghi, PUT/DELETE su registrations,
+                        // GET/PUT su modification-requests, audit-logs, gestione operatori) → solo admin
                         .requestMatchers("/api/**").authenticated()
                         .anyRequest().permitAll()
                 )
@@ -120,8 +137,8 @@ public class SecurityConfig {
     }
 
     @Bean
-    public UserDetailsService userDetailsService(AdminRepository adminRepository) {
-        return new AppUserDetailsService(adminRepository);
+    public UserDetailsService userDetailsService(OperatorRepository operatorRepository) {
+        return new AppUserDetailsService(operatorRepository);
     }
 
     @Bean

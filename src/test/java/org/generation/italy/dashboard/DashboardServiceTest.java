@@ -7,8 +7,6 @@ import org.generation.italy.dashboard.dto.InterventionTypeSummary;
 import org.generation.italy.dashboard.dto.OperatorSummary;
 import org.generation.italy.dashboard.projection.InterventionTypeDashboardProjection;
 import org.generation.italy.dashboard.projection.OperatorDashboardProjection;
-import org.generation.italy.model.repositories.EvaluationRepository;
-import org.generation.italy.model.repositories.RegistrationRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;

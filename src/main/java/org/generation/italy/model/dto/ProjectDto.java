@@ -1,7 +1,7 @@
 package org.generation.italy.model.dto;
-//ciao
+
 public record ProjectDto(
-        Long id,
+        Integer id,
         String name,
-        String acronym
+        String code
 ) {}

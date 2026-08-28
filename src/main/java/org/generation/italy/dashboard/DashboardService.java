@@ -1,17 +1,18 @@
+/*
 package org.generation.italy.dashboard;
 
 import org.generation.italy.dashboard.dto.DashboardData;
 import org.generation.italy.dashboard.dto.InterventionTypeSummary;
 import org.generation.italy.dashboard.dto.OperatorSummary;
 import org.generation.italy.dashboard.dto.ProjectSummary;
-import org.generation.italy.model.repositories.EvaluationRepository;
-import org.generation.italy.model.repositories.RegistrationRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-/** Provides the aggregate data displayed in the administrator dashboard. */
+*/
+/** Provides the aggregate data displayed in the administrator dashboard. *//*
+
 @Service
 public class DashboardService {
     private final RegistrationRepository registrationRepository;
@@ -23,10 +24,12 @@ public class DashboardService {
         this.evaluationRepository = evaluationRepository;
     }
 
-    /**
+    */
+/**
      * Returns all dashboard data. When {@code projectId} is supplied, the
      * project-specific counters are populated as well.
-     */
+     *//*
+
     @Transactional(readOnly = true)
     public DashboardData getDashboardData(Long projectId) {
         return new DashboardData(
@@ -38,7 +41,9 @@ public class DashboardService {
         );
     }
 
-    /** Convenience overload for a dashboard without a selected project. */
+    */
+/** Convenience overload for a dashboard without a selected project. *//*
+
     @Transactional(readOnly = true)
     public DashboardData getDashboardData() {
         return getDashboardData(null);
@@ -85,3 +90,4 @@ public class DashboardService {
     }
 
 }
+*/

@@ -6,19 +6,18 @@ import java.util.List;
 
 public record RegistrationDto(
         Long id,
-        Long domainId,
-        String domainName,
-        LocalDate date,
-        Integer durationMinutes,
-        Long projectId,
+        Integer projectId,
         String projectName,
-        Long patientId,
-        Integer patientCode,
-        List<Long> additionalPatientIds,
-        List<Long> researcherIds,
-        Long referringDoctorId,
-        String referringDoctorName,
-        List<Long> testIds,
-        LocalDateTime creationDate,
-        Boolean modified
+        Integer domainId,
+        String domainName,
+        Integer sessionId,
+        String sessionName,
+        Integer doctorId,
+        String doctorFullName,
+        LocalDate activityDate,
+        Integer durationMinutes,
+        List<Integer> operatorIds,
+        List<Long> subjectIds,
+        List<Integer> activityIds,
+        LocalDateTime createdAt
 ) {}

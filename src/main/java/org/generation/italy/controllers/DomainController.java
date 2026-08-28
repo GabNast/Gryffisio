@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/domain")
+@RequestMapping("/api/domains")
 public class DomainController {
     private final DomainService domainService;
 
@@ -19,7 +19,7 @@ public class DomainController {
     }
 
     @GetMapping("/{id}")
-    public DomainDto getById(@PathVariable Long id) {
+    public DomainDto getById(@PathVariable Integer id) {
         return domainService.findById(id);
     }
 
@@ -31,17 +31,17 @@ public class DomainController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public DomainDto create(@Valid @RequestBody DomainRequest request) {
-        return domainService.create(request);
+        return domainService.createDomain(request);
     }
 
     @PutMapping("/{id}")
-    public DomainDto update(@PathVariable Long id, @Valid @RequestBody DomainRequest request) {
-        return domainService.update(id, request);
+    public DomainDto update(@PathVariable Integer id, @Valid @RequestBody DomainRequest request) {
+        return domainService.updateDomain(id, request);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable Long id) {
-        domainService.delete(id);
+    public void delete(@PathVariable Integer id) {
+        domainService.deleteDomain(id);
     }
 }

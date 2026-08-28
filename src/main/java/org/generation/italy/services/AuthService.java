@@ -3,33 +3,32 @@ package org.generation.italy.services;
 import org.generation.italy.model.dto.CreateUserRequest;
 import org.generation.italy.model.dto.LoginRequest;
 import org.generation.italy.model.dto.LoginResponse;
-import org.generation.italy.model.dto.UserDto;
-import org.generation.italy.model.entities.Admin;
-import org.generation.italy.model.exceptions.BadRequestException;
+import org.generation.italy.model.dto.OperatorDto;
+import org.generation.italy.model.entities.Operator;
 import org.generation.italy.model.exceptions.ConflictException;
-import org.generation.italy.model.repositories.AdminRepository;
+import org.generation.italy.model.exceptions.NotFoundException;
+import org.generation.italy.model.repositories.OperatorRepository;
 import org.generation.italy.security.JwtService;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.generation.italy.model.exceptions.NotFoundException;
 
 @Service
 public class AuthService {
-    private final AdminRepository adminRepository;
+    private final OperatorRepository operatorRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
 
     public AuthService(
-            AdminRepository adminRepository,
+            OperatorRepository operatorRepository,
             PasswordEncoder passwordEncoder,
             AuthenticationManager authenticationManager,
             JwtService jwtService
     ) {
-        this.adminRepository = adminRepository;
+        this.operatorRepository = operatorRepository;
         this.passwordEncoder = passwordEncoder;
         this.authenticationManager = authenticationManager;
         this.jwtService = jwtService;
@@ -38,37 +37,30 @@ public class AuthService {
     @Transactional(readOnly = true)
     public LoginResponse login(LoginRequest request) {
         authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.name(), request.password())
+                new UsernamePasswordAuthenticationToken(request.email(), request.password())
         );
 
-        Admin user = adminRepository.findByName(request.name())
-                .orElseThrow(() -> new NotFoundException("user_not_found", "User not found: " + request.name()));
+        Operator operator = operatorRepository.findByEmailIgnoreCase(request.email())
+                .orElseThrow(() -> new NotFoundException("operator_not_found", "Operator not found: " + request.email()));
 
-        String token = jwtService.createToken(user);
+        String token = jwtService.createToken(operator);
         return new LoginResponse(token);
     }
 
     @Transactional
-    public UserDto createUser(CreateUserRequest request) {
-        if (request.name() == null || request.name().isBlank()) {
-            throw new BadRequestException("invalid_request", "Username is required");
-        }
-        if (request.password() == null || request.password().isBlank()) {
-            throw new BadRequestException("invalid_request", "Password is required");
-        }
-        if (adminRepository.existsByName(request.name())) {
-            throw new ConflictException("username_unavailable", "Username already exists: " + request.name());
+    public OperatorDto createUser(CreateUserRequest request) {
+        if (operatorRepository.existsByEmailIgnoreCase(request.email())) {
+            throw new ConflictException("email_unavailable", "Email already exists: " + request.email());
         }
 
+        Operator operator = new Operator();
+        operator.setFirstName(request.firstName());
+        operator.setLastName(request.lastName());
+        operator.setEmail(request.email());
+        operator.setRole(Operator.Role.ADMIN);
+        operator.setPasswordHash(passwordEncoder.encode(request.password()));
 
-        Admin user = new Admin();
-        user.setName(request.name());
-        user.setPasswordHash(passwordEncoder.encode(request.password()));
-
-        Admin saved = adminRepository.save(user);
-        return new UserDto(
-                saved.getId(),
-                saved.getName()
-        );
+        Operator saved = operatorRepository.save(operator);
+        return new OperatorDto(saved.getId(), saved.getFirstName(), saved.getLastName(), saved.getEmail(), saved.getRole().name());
     }
 }

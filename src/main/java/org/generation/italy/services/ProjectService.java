@@ -20,59 +20,59 @@ public class ProjectService {
     }
 
     private ProjectDto toDto(Project project) {
-        return new ProjectDto(project.getId(), project.getName(), project.getAcronym());
+        return new ProjectDto(project.getId(), project.getName(), project.getCode());
     }
 
     @Transactional(readOnly = true)
-    public List<ProjectDto> findAllProjects() {
-       return projectRepository.findAll().stream()
-               .map(this::toDto)
-               .toList();
+    public List<ProjectDto> findAll() {
+        return projectRepository.findAll().stream()
+                .map(this::toDto)
+                .toList();
     }
 
     @Transactional(readOnly = true)
-    public ProjectDto findById(Long id) {
+    public ProjectDto findById(Integer id) {
         Project project = projectRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Project_not_found", "Project not found: " + id));
         return toDto(project);
     }
 
-
     @Transactional
-    public ProjectDto createProject(ProjectRequest projectRequest) {
-        if (projectRepository.existsByNameIgnoreCase(projectRequest.name())) {
-            throw new ConflictException("Project_name_unavailable", "Project name already exists: " + projectRequest.name());
+    public ProjectDto createProject(ProjectRequest request) {
+        if (projectRepository.existsByNameIgnoreCase(request.name())) {
+            throw new ConflictException("Project_name_already_exists", "Project name already exists: " + request.name());
+        }
+        if (projectRepository.existsByCodeIgnoreCase(request.code())) {
+            throw new ConflictException("Project_code_already_exists", "Project code already exists: " + request.code());
         }
 
-        if (projectRepository.existsByAcronymIgnoreCase(projectRequest.acronym())) {
-            throw new ConflictException("Project_acronym_unavailable", "Project acronym already exists: " + projectRequest.acronym());
-        }
         Project project = new Project();
-        project.setName(projectRequest.name());
-        project.setAcronym(projectRequest.acronym());
-        Project savedProject = projectRepository.save(project);
-        return toDto(savedProject);
+        project.setName(request.name());
+        project.setCode(request.code());
+        Project saved = projectRepository.save(project);
+        return toDto(saved);
     }
 
     @Transactional
-    public ProjectDto updateProject(Long id, ProjectRequest projectRequest) {
+    public ProjectDto updateProject(Integer id, ProjectRequest request) {
         Project project = projectRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Project_not_found", "Project not found: " + id));
-        if (projectRepository.existsByNameIgnoreCaseAndIdNot(projectRequest.name(), id)) {
-            throw new ConflictException("Project_name_unavailable", "Project name already exists: " + projectRequest.name());
+
+        if (projectRepository.existsByNameIgnoreCaseAndIdNot(request.name(), id)) {
+            throw new ConflictException("Project_name_already_exists", "Project name already exists: " + request.name());
         }
-        if(projectRepository.existsByAcronymIgnoreCaseAndIdNot(projectRequest.acronym(), id)) {
-            throw new ConflictException("Project_acronym_unavailable", "Project acronym already exists: " + projectRequest.acronym());
+        if (projectRepository.existsByCodeIgnoreCaseAndIdNot(request.code(), id)) {
+            throw new ConflictException("Project_code_already_exists", "Project code already exists: " + request.code());
         }
 
-        project.setName(projectRequest.name());
-        project.setAcronym(projectRequest.acronym());
+        project.setName(request.name());
+        project.setCode(request.code());
         return toDto(projectRepository.save(project));
     }
 
     @Transactional
-    public void deleteProject(Long id) {
-        if(!projectRepository.existsById(id)) {
+    public void deleteProject(Integer id) {
+        if (!projectRepository.existsById(id)) {
             throw new NotFoundException("Project_not_found", "Project not found: " + id);
         }
         projectRepository.deleteById(id);

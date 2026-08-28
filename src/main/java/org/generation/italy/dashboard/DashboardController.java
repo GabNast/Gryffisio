@@ -1,3 +1,4 @@
+/*
 package org.generation.italy.dashboard;
 
 import org.generation.italy.dashboard.dto.DashboardData;
@@ -18,14 +19,17 @@ public class DashboardController {
         this.dashboardService = dashboardService;
     }
 
-    /**
+    */
+/**
      * Returns all administrator dashboard metrics.
      *
      * @param projectId optional selected project identifier
-     */
+     *//*
+
     @GetMapping
     public DashboardData getDashboardData(
             @RequestParam(required = false) Long projectId) {
         return dashboardService.getDashboardData(projectId);
     }
 }
+*/

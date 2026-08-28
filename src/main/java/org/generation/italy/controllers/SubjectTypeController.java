@@ -19,34 +19,29 @@ public class SubjectTypeController {
     }
 
     @GetMapping("/{id}")
-    public SubjectTypeDto getSubjectTypeById(@PathVariable Long id) {
+    public SubjectTypeDto getById(@PathVariable Integer id) {
         return subjectTypeService.findById(id);
     }
 
-    @GetMapping("/search")
-    public SubjectTypeDto getSubjectTypeByName(@RequestParam String typeName) {
-        return subjectTypeService.findSubjectTypeName(typeName);
-    }
-
     @GetMapping
-    public List<SubjectTypeDto> findAll() {
-        return subjectTypeService.findAllSubjectTypes();
+    public List<SubjectTypeDto> getAll() {
+        return subjectTypeService.findAll();
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public SubjectTypeDto createSubjectType(@Valid @RequestBody SubjectTypeRequest subjectTypeRequest) {
-        return  subjectTypeService.createSubjectType(subjectTypeRequest);
+    public SubjectTypeDto create(@Valid @RequestBody SubjectTypeRequest request) {
+        return subjectTypeService.createSubjectType(request);
     }
 
     @PutMapping("/{id}")
-    public SubjectTypeDto updateSubjectType(@PathVariable Long id, @Valid @RequestBody SubjectTypeRequest subjectTypeRequest) {
-        return  subjectTypeService.updateSubjectType(id, subjectTypeRequest);
+    public SubjectTypeDto update(@PathVariable Integer id, @Valid @RequestBody SubjectTypeRequest request) {
+        return subjectTypeService.updateSubjectType(id, request);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteSubjectType(@PathVariable Long id) {
+    public void delete(@PathVariable Integer id) {
         subjectTypeService.deleteSubjectType(id);
     }
 }

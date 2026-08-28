@@ -4,7 +4,7 @@ import jakarta.validation.Valid;
 import org.generation.italy.model.dto.CreateUserRequest;
 import org.generation.italy.model.dto.LoginRequest;
 import org.generation.italy.model.dto.LoginResponse;
-import org.generation.italy.model.dto.UserDto;
+import org.generation.italy.model.dto.OperatorDto;
 import org.generation.italy.services.AuthService;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -33,7 +33,7 @@ public class AuthController {
     @PostMapping("/users")
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasRole('ADMIN')")
-    public UserDto createUser(@Valid @RequestBody CreateUserRequest request) {
+    public OperatorDto createUser(@Valid @RequestBody CreateUserRequest request) {
         return authService.createUser(request);
     }
 }

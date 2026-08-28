@@ -19,30 +19,29 @@ public class ProjectController {
     }
 
     @GetMapping("/{id}")
-    public ProjectDto getProjectById(@PathVariable Long id) {
+    public ProjectDto getById(@PathVariable Integer id) {
         return projectService.findById(id);
     }
 
     @GetMapping
-    public List<ProjectDto> getAllProjects() {
-        return  projectService.findAllProjects();
+    public List<ProjectDto> getAll() {
+        return projectService.findAll();
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ProjectDto createProject(@Valid @RequestBody ProjectRequest projectRequest) {
-        return projectService.createProject(projectRequest);
+    public ProjectDto create(@Valid @RequestBody ProjectRequest request) {
+        return projectService.createProject(request);
     }
 
     @PutMapping("/{id}")
-    public ProjectDto updateProject(@PathVariable Long id, @Valid @RequestBody ProjectRequest projectRequest) {
-        return projectService.updateProject(id, projectRequest);
+    public ProjectDto update(@PathVariable Integer id, @Valid @RequestBody ProjectRequest request) {
+        return projectService.updateProject(id, request);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteProject(@PathVariable Long id) {
+    public void delete(@PathVariable Integer id) {
         projectService.deleteProject(id);
     }
-
 }

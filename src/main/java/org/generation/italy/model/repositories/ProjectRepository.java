@@ -5,12 +5,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
-public interface ProjectRepository extends JpaRepository<Project, Long> {
+public interface ProjectRepository extends JpaRepository<Project, Integer> {
     Optional<Project> findByNameIgnoreCase(String name);
     boolean existsByNameIgnoreCase(String name);
-    boolean existsByNameIgnoreCaseAndIdNot(String name, Long id);
+    boolean existsByNameIgnoreCaseAndIdNot(String name, Integer id);
 
-    Optional<Project> findByAcronymIgnoreCase(String acronym);
-    boolean existsByAcronymIgnoreCase(String acronym);
-    boolean existsByAcronymIgnoreCaseAndIdNot(String acronym, Long id);
+    Optional<Project> findByCodeIgnoreCase(String code);
+    boolean existsByCodeIgnoreCase(String code);
+    boolean existsByCodeIgnoreCaseAndIdNot(String code, Integer id);
 }

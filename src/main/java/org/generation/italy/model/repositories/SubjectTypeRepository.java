@@ -5,8 +5,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
-public interface SubjectTypeRepository extends JpaRepository<SubjectType, Long> {
+public interface SubjectTypeRepository extends JpaRepository<SubjectType, Integer> {
     Optional<SubjectType> findByTypeIgnoreCase(String type);
     boolean existsByTypeIgnoreCase(String type);
-    boolean existsByTypeIgnoreCaseAndIdNot(String type, Long id);
+    boolean existsByTypeIgnoreCaseAndIdNot(String type, Integer id);
 }

@@ -19,34 +19,29 @@ public class SessionController {
     }
 
     @GetMapping("/{id}")
-    public SessionDto getById(@PathVariable Integer id){
+    public SessionDto getById(@PathVariable Integer id) {
         return sessionService.findById(id);
     }
 
     @GetMapping
-    public List<SessionDto> getAll(){
+    public List<SessionDto> getAll() {
         return sessionService.findAll();
-    }
-
-    @GetMapping("/evaluationName")
-    public SessionDto getByEvaluationName(@RequestParam String evaluationName){
-        return sessionService.findByEvaluationName(evaluationName);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public SessionDto create(@Valid @RequestBody SessionRequest sessionRequest){
-        return sessionService.createSession(sessionRequest);
+    public SessionDto create(@Valid @RequestBody SessionRequest request) {
+        return sessionService.createSession(request);
     }
 
     @PutMapping("/{id}")
-    public SessionDto update(@PathVariable Integer id, @Valid @RequestBody SessionRequest sessionRequest){
-        return sessionService.updateSession(id, sessionRequest);
+    public SessionDto update(@PathVariable Integer id, @Valid @RequestBody SessionRequest request) {
+        return sessionService.updateSession(id, request);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable Integer id){
+    public void delete(@PathVariable Integer id) {
         sessionService.deleteSession(id);
     }
 }

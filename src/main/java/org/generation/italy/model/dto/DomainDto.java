@@ -1,7 +1,10 @@
 package org.generation.italy.model.dto;
 
-//ciao
+import java.util.List;
+
 public record DomainDto(
-        Long id,
-        String name
+        Integer id,
+        String name,
+        List<Integer> activityIds,
+        List<String> activityNames
 ) {}

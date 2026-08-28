@@ -9,27 +9,29 @@ import java.util.List;
 
 public record RegistrationRequest(
         @NotNull
-        Long domainId,
+        Integer projectId,
 
-        @NotEmpty
-        @Size(max = 5)
-        List<Long> researcherIds,
+        @NotNull
+        Integer domainId,
 
-        LocalDate date,
+        @NotNull
+        Integer sessionId,
+
+        Integer doctorId,
+
+        @NotNull
+        LocalDate activityDate,
 
         @NotNull
         Integer durationMinutes,
 
-        @NotNull
-        Long projectId,
-
-        @NotNull
-        Long patientId,
-
-        List<Long> additionalPatientIds,
-
-        Long referringDoctorId,
+        @NotEmpty
+        @Size(max = 5)
+        List<Integer> operatorIds,
 
         @NotEmpty
-        List<Long> testIds
+        List<Long> subjectIds,
+
+        @NotEmpty
+        List<Integer> activityIds
 ) {}

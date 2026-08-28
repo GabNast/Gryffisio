@@ -1,23 +1,22 @@
 package org.generation.italy.security;
 
-import org.generation.italy.model.entities.Admin;
-import org.generation.italy.model.repositories.AdminRepository;
+import org.generation.italy.model.entities.Operator;
+import org.generation.italy.model.repositories.OperatorRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 public class AppUserDetailsService implements UserDetailsService {
-    private final AdminRepository adminRepository;
+    private final OperatorRepository operatorRepository;
 
-    public AppUserDetailsService(AdminRepository adminRepository) {
-        this.adminRepository = adminRepository;
+    public AppUserDetailsService(OperatorRepository operatorRepository) {
+        this.operatorRepository = operatorRepository;
     }
 
     @Override
-    public UserDetails loadUserByUsername(String name) throws UsernameNotFoundException {
-        Admin user = adminRepository.findByName(name)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + name));
-        return new AppUserPrincipal(user);
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        Operator operator = operatorRepository.findByEmailIgnoreCase(email)
+                .orElseThrow(() -> new UsernameNotFoundException("Operator not found: " + email));
+        return new AppUserPrincipal(operator);
     }
 }
-

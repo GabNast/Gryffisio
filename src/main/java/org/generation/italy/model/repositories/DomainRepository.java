@@ -5,8 +5,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
-public interface DomainRepository extends JpaRepository<Domain, Long> {
+public interface DomainRepository extends JpaRepository<Domain, Integer> {
     Optional<Domain> findByNameIgnoreCase(String name);
     boolean existsByNameIgnoreCase(String name);
-    boolean existsByNameIgnoreCaseAndIdNot(String name, Long id);
+    boolean existsByNameIgnoreCaseAndIdNot(String name, Integer id);
 }

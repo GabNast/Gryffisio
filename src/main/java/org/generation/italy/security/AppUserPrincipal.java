@@ -1,6 +1,6 @@
 package org.generation.italy.security;
 
-import org.generation.italy.model.entities.Admin;
+import org.generation.italy.model.entities.Operator;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -9,33 +9,29 @@ import java.util.Collection;
 import java.util.List;
 
 public class AppUserPrincipal implements UserDetails {
-    private final Admin admin;
+    private final Operator operator;
 
-    public AppUserPrincipal(Admin user) {
-        this.admin = user;
+    public AppUserPrincipal(Operator operator) {
+        this.operator = operator;
     }
 
-    public Admin getUser() {
-        return admin;
+    public Operator getOperator() {
+        return operator;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"));
+        return List.of(new SimpleGrantedAuthority("ROLE_" + operator.getRole().name()));
     }
-        //return user.getRoles().stream()
-        //        .map(r -> new SimpleGrantedAuthority("ROLE_" + r.name()))
-        //        .toList();
-    //}
 
     @Override
     public String getPassword() {
-        return admin.getPasswordHash();
+        return operator.getPasswordHash();
     }
 
     @Override
     public String getUsername() {
-        return admin.getName();
+        return operator.getEmail();
     }
 
     @Override
@@ -58,4 +54,3 @@ public class AppUserPrincipal implements UserDetails {
         return true;
     }
 }
-
