@@ -1,6 +1,6 @@
 package org.generation.italy.model.repositories;
 
-public interface OperatorMatricsProjection {
+public interface OperatorMetricsProjection {
     Integer getOperatorId();
     String getOperatorName();
     Long getTotalMinutes();

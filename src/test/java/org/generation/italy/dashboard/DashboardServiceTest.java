@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.generation.italy.dashboard.dto.DashboardData;
 import org.generation.italy.dashboard.dto.InterventionTypeSummary;
 import org.generation.italy.dashboard.dto.OperatorMatricsDto;
-import org.generation.italy.dashboard.projection.DomainMatricsProjection;
+import org.generation.italy.dashboard.projection.DomainMetricsProjection;
 import org.generation.italy.dashboard.projection.OperatorMatricsProjection;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -150,7 +150,7 @@ class DashboardServiceTest {
             long sessionTypeId,
             String sessionTypeName,
             long evaluations,
-            long totalMinutes) implements DomainMatricsProjection {
+            long totalMinutes) implements DomainMetricsProjection {
 
         @Override
         public long getSessionTypeId() {

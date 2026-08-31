@@ -1,6 +1,6 @@
 package org.generation.italy.model.repositories;
 
-public interface DomainMatricsProjection {
+public interface DomainMetricsProjection {
     Integer getDomainId();
     String getDomainName();
     Long getRegistrationCount();
