@@ -12,7 +12,7 @@ import java.util.List;
 
 @Service
 public class DashboardService {
-    public final RegistrationRepository registrationRepository;
+    private final RegistrationRepository registrationRepository;
 
     public DashboardService(RegistrationRepository registrationRepository) {
         this.registrationRepository = registrationRepository;

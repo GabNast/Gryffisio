@@ -28,6 +28,16 @@ public class ProjectController {
         return projectService.findAll();
     }
 
+    @GetMapping("/name")
+    public ProjectDto getByName(@RequestParam String name) {
+        return projectService.findByName(name);
+    }
+
+    @GetMapping("/code")
+    public ProjectDto getByCode(@RequestParam String code) {
+        return projectService.findByCode(code);
+    }
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ProjectDto create(@Valid @RequestBody ProjectRequest request) {

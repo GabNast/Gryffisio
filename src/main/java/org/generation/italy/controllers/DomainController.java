@@ -23,6 +23,11 @@ public class DomainController {
         return domainService.findById(id);
     }
 
+    @GetMapping("/name")
+    public DomainDto getByName(@RequestParam String name) {
+        return  domainService.findByName(name);
+    }
+
     @GetMapping
     public List<DomainDto> getAll() {
         return domainService.findAll();

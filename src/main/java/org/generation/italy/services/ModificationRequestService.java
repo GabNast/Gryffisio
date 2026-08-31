@@ -60,15 +60,21 @@ public class ModificationRequestService {
     }
 
     @Transactional(readOnly = true)
-    public List<ModificationRequestDto> findAll() {
-        return modificationRequestRepository.findAll().stream()
-                .map(this::toDto)
-                .toList();
-    }
+    public List<ModificationRequestDto> findAll(String status) {
+        if (status == null) {
+            return modificationRequestRepository.findAll().stream()
+                    .map(this::toDto)
+                    .toList();
+        }
 
-    @Transactional(readOnly = true)
-    public List<ModificationRequestDto> findPending() {
-        return modificationRequestRepository.findByStatus(ModificationRequest.Status.PENDING).stream()
+        ModificationRequest.Status parsedStatus;
+        try {
+            parsedStatus = ModificationRequest.Status.valueOf(status.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new BadRequestException("Invalid_status", "Invalid status: " + status + ". Allowed values: PENDING, APPROVED, REJECTED");
+        }
+
+        return modificationRequestRepository.findByStatus(parsedStatus).stream()
                 .map(this::toDto)
                 .toList();
     }
