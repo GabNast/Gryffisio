@@ -1,11 +1,12 @@
 package org.generation.italy.model.dto;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public record AuditLogDto(
         Long id,
-        Integer operatorId,
-        String operatorFullName,
+        List<Integer> operatorIds,
+        List<String> operatorNames,
         String action,
         String entityName,
         Long entityId,

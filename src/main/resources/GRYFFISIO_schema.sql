@@ -11,10 +11,16 @@ CREATE TABLE IF NOT EXISTS public.activities
     CONSTRAINT activities_pkey PRIMARY KEY (id)
 );
 
+CREATE TABLE IF NOT EXISTS public.audit_log_operators
+(
+    audit_log_id bigint NOT NULL,
+    operator_id integer NOT NULL,
+    CONSTRAINT audit_log_operators_pkey PRIMARY KEY (audit_log_id, operator_id)
+);
+
 CREATE TABLE IF NOT EXISTS public.audit_logs
 (
     id bigserial NOT NULL,
-    operator_id integer,
     action character varying(50) COLLATE pg_catalog."default" NOT NULL,
     entity_name character varying(50) COLLATE pg_catalog."default" NOT NULL,
     entity_id bigint NOT NULL,
@@ -117,6 +123,7 @@ CREATE TABLE IF NOT EXISTS public.registrations
     activity_date date NOT NULL,
     duration_minutes integer NOT NULL,
     created_at timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone,
     CONSTRAINT registrations_pkey PRIMARY KEY (id)
 );
 
@@ -153,11 +160,18 @@ ALTER TABLE IF EXISTS public.activities
         ON DELETE CASCADE;
 
 
-ALTER TABLE IF EXISTS public.audit_logs
-    ADD CONSTRAINT audit_logs_operator_id_fkey FOREIGN KEY (operator_id)
+ALTER TABLE IF EXISTS public.audit_log_operators
+    ADD CONSTRAINT audit_log_operators_audit_log_id_fkey FOREIGN KEY (audit_log_id)
+        REFERENCES public.audit_logs (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE CASCADE;
+
+
+ALTER TABLE IF EXISTS public.audit_log_operators
+    ADD CONSTRAINT audit_log_operators_operator_id_fkey FOREIGN KEY (operator_id)
         REFERENCES public.operators (id) MATCH SIMPLE
         ON UPDATE NO ACTION
-        ON DELETE SET NULL;
+        ON DELETE CASCADE;
 
 
 ALTER TABLE IF EXISTS public.domain_activities

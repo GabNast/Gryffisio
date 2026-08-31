@@ -21,5 +21,8 @@ public record CreateUserRequest(
 
         @NotBlank
         @StrongPassword
-        String password
+        String password,
+
+        @NotBlank
+        String role
 ) {}

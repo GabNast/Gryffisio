@@ -37,6 +37,20 @@ public class ProjectService {
         return toDto(project);
     }
 
+    @Transactional(readOnly = true)
+    public ProjectDto findByCode(String code) {
+        Project project = projectRepository.findByCodeIgnoreCase(code)
+                .orElseThrow(() -> new NotFoundException("Project_not_found", "Project not found: " + code));
+        return toDto(project);
+    }
+
+    @Transactional(readOnly = true)
+    public ProjectDto findByName(String name) {
+        Project project = projectRepository.findByNameIgnoreCase(name)
+                .orElseThrow(() -> new NotFoundException("Project_not_found", "Project not found: " + name));
+        return toDto(project);
+    }
+
     @Transactional
     public ProjectDto createProject(ProjectRequest request) {
         if (projectRepository.existsByNameIgnoreCase(request.name())) {

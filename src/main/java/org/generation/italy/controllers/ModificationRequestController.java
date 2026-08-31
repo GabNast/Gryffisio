@@ -27,13 +27,8 @@ public class ModificationRequestController {
     }
 
     @GetMapping
-    public List<ModificationRequestDto> getAll() {
-        return modificationRequestService.findAll();
-    }
-
-    @GetMapping("/pending")
-    public List<ModificationRequestDto> getPending() {
-        return modificationRequestService.findPending();
+    public List<ModificationRequestDto> getAll(@RequestParam(required = false) String status) {
+        return modificationRequestService.findAll(status);
     }
 
     @PostMapping
@@ -42,7 +37,7 @@ public class ModificationRequestController {
         return modificationRequestService.create(request);
     }
 
-    @PutMapping("/{id}/decision")
+    @PutMapping("/{id}")
     public ModificationRequestDto decide(
             @PathVariable Long id,
             @Valid @RequestBody ModificationRequestDecision decision,

@@ -22,6 +22,7 @@ public class RegistrationService {
     private final OperatorRepository operatorRepository;
     private final SubjectRepository subjectRepository;
     private final ActivityRepository activityRepository;
+    private final AuditLogService auditLogService;
 
     public RegistrationService(
             RegistrationRepository registrationRepository,
@@ -31,7 +32,7 @@ public class RegistrationService {
             DoctorRepository doctorRepository,
             OperatorRepository operatorRepository,
             SubjectRepository subjectRepository,
-            ActivityRepository activityRepository
+            ActivityRepository activityRepository, AuditLogService auditLogService
     ) {
         this.registrationRepository = registrationRepository;
         this.projectRepository = projectRepository;
@@ -41,6 +42,7 @@ public class RegistrationService {
         this.operatorRepository = operatorRepository;
         this.subjectRepository = subjectRepository;
         this.activityRepository = activityRepository;
+        this.auditLogService = auditLogService;
     }
 
     private RegistrationDto toDto(Registration registration) {
@@ -84,15 +86,26 @@ public class RegistrationService {
         applyRequest(registration, request);
         registration.setCreatedAt(LocalDateTime.now());
         Registration saved = registrationRepository.save(registration);
+
+        auditLogService.log(new java.util.HashSet<>(saved.getOperators()), "CREATE", "Registration", saved.getId(),
+                "Registration created via public form");
+
         return toDto(saved);
     }
 
     @Transactional
-    public RegistrationDto updateRegistration(Long id, RegistrationRequest request) {
+    public RegistrationDto updateRegistration(Long id, RegistrationRequest request, Integer adminId) {
         Registration registration = registrationRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Registration_not_found", "Registration not found: " + id));
         applyRequest(registration, request);
-        return toDto(registrationRepository.save(registration));
+        registration.setUpdatedAt(LocalDateTime.now());
+        Registration saved = registrationRepository.save(registration);
+
+        Operator admin = operatorRepository.findById(adminId)
+                .orElseThrow(() -> new NotFoundException("Operator_not_found", "Operator not found: " + adminId));
+        auditLogService.log(Set.of(admin), "UPDATE", "Registration", saved.getId(), "Registration updated by admin");
+
+        return toDto(saved);
     }
 
     private void applyRequest(Registration registration, RegistrationRequest request) {
@@ -138,10 +151,12 @@ public class RegistrationService {
     }
 
     @Transactional
-    public void deleteRegistration(Long id) {
+    public void deleteRegistration(Long id, Integer adminId) {
         if (!registrationRepository.existsById(id)) {
             throw new NotFoundException("Registration_not_found", "Registration not found: " + id);
         }
-        registrationRepository.deleteById(id);
+        Operator admin = operatorRepository.findById(adminId)
+                .orElseThrow(() -> new NotFoundException("Operator_not_found", "Operator not found: " + adminId));
+        auditLogService.log(Set.of(admin), "DELETE", "Registration", id, "Registration deleted by admin");        registrationRepository.deleteById(id);
     }
 }

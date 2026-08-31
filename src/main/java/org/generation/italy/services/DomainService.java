@@ -47,6 +47,13 @@ public class DomainService {
         return toDto(domain);
     }
 
+    @Transactional(readOnly = true)
+    public DomainDto findByName(String name) {
+        Domain domain = domainRepository.findByNameIgnoreCase(name)
+                .orElseThrow(() -> new NotFoundException("Domain_not_found", "Domain not found: " + name));
+        return toDto(domain);
+    }
+
     @Transactional
     public DomainDto createDomain(DomainRequest request) {
         if (domainRepository.existsByNameIgnoreCase(request.name())) {
