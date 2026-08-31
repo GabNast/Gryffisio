@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface RegistrationRepository extends JpaRepository<Registration, Long> {
     @Query("""
-        SELECT o.id as operatorId, COUNT(r.id) as registrationCount, COALESCE(SUM(r.durationMinutes),0) as totalMinutes, CONCAT(o.fistName,' ',o.lastName) as operatorName
+        SELECT o.id as operatorId, COUNT(r.id) as registrationCount, COALESCE(SUM(r.durationMinutes),0) as totalMinutes, CONCAT(o.firstName,' ',o.lastName) as operatorName
         
         FROM Registration r JOIN r.operators o
         GROUP BY o.id, o.firstName, o.lastName
