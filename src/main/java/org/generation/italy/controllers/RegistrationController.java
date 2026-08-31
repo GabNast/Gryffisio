@@ -27,14 +27,7 @@ public class RegistrationController {
         this.registrationExportService = registrationExportService;
     }
 
-    @GetMapping("/export")
-    public ResponseEntity<byte[]> export() {
-        byte[] csv = registrationExportService.exportCsv();
-        return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"registrazioni.csv\"")
-                .contentType(MediaType.parseMediaType("text/csv; charset=UTF-8"))
-                .body(csv);
-    }
+
 
     @GetMapping("/{id}")
     public RegistrationDto getById(@PathVariable Long id) {
