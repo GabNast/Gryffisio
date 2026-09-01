@@ -149,8 +149,8 @@ parent di se stessa (400 `Activity_invalid_parent`).
 | GET | `` | pub | → `SubjectDto[]` |
 | GET | `/by-project/{projectId}` | pub | → `SubjectDto[]` *(da sistemare: dovrebbe essere `?projectId=` sulla collection)* |
 | POST | `` | pub | `SubjectRequest` → `SubjectSaveResult` (201) |
-| PUT | `/{id}` | auth | `SubjectRequest` → `SubjectSaveResult` |
-| DELETE | `/{id}` | auth | → 204 |
+| PUT | `/{id}` | **admin** | `SubjectRequest` → `SubjectSaveResult` |
+| DELETE | `/{id}` | **admin** | → 204 |
 
 **Attenzione (comportamento non ovvio):** `POST`/`PUT` su subject **non** fanno
 deduplica. Se `code` esiste già per lo stesso `projectId`, il backend crea/aggiorna

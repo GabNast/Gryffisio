@@ -29,6 +29,7 @@ public class RegistrationExportService {
     private static final CSVFormat CSV_FORMAT = CSVFormat.DEFAULT.builder()
             .setHeader(
                     "id",
+                    "tipo_registrazione",
                     "dominio",
                     "progetto",
                     "id_soggetto",
@@ -39,9 +40,12 @@ public class RegistrationExportService {
                     "data",
                     "medico",
                     "operatori",
-                    "data_creazione"
+                    "data_creazione",
+                    "ultima_modifica"
             )
             .build();
+
+    private static final String INTERVENTION_DOMAIN = "Interventi riabilitativi/allenamenti";
 
     private static final DateTimeFormatter DATE_FORMAT =
             DateTimeFormatter.ofPattern("dd/MM/yyyy");
@@ -57,6 +61,9 @@ public class RegistrationExportService {
         return List.of(
                 // id
                 String.valueOf(reg.getId()),
+
+                // tipo di registrazione: derivato dal dominio (Intervento vs Valutazione)
+                INTERVENTION_DOMAIN.equalsIgnoreCase(reg.getDomain().getName()) ? "Intervento" : "Valutazione",
 
                 // dominio (obbligatorio)
                 reg.getDomain().getName(),
@@ -101,7 +108,12 @@ public class RegistrationExportService {
                         .collect(Collectors.joining("; ")),
 
                 // data/ora creazione (obbligatoria)
-                reg.getCreatedAt().format(DATE_TIME_FORMAT)
+                reg.getCreatedAt().format(DATE_TIME_FORMAT),
+
+                // ultima modifica (nullable -> cella vuota se mai modificata)
+                reg.getUpdatedAt() != null
+                        ? reg.getUpdatedAt().format(DATE_TIME_FORMAT)
+                        : ""
         );
     }
 
