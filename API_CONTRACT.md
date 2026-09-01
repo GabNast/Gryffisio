@@ -86,9 +86,9 @@ valore diverso → 400 `Invalid_role`.
 | GET | `` | pub | → `ProjectDto[]` |
 | GET | `/name?name=` | pub | → `ProjectDto` *(da sistemare lato backend: dovrebbe diventare `?name=` sulla collection, per ora è un path fisso)* |
 | GET | `/code?code=` | pub | → `ProjectDto` *(stesso discorso)* |
-| POST | `` | auth | `ProjectRequest` → `ProjectDto` (201) |
-| PUT | `/{id}` | auth | `ProjectRequest` → `ProjectDto` |
-| DELETE | `/{id}` | auth | → 204 |
+| POST | `` | **admin** | `ProjectRequest` → `ProjectDto` (201) |
+| PUT | `/{id}` | **admin** | `ProjectRequest` → `ProjectDto` |
+| DELETE | `/{id}` | **admin** | → 204 |
 
 ### Domini (`/api/domains`)
 | Metodo | Path | Auth | Body → Risposta |
@@ -96,9 +96,9 @@ valore diverso → 400 `Invalid_role`.
 | GET | `/{id}` | pub | → `DomainDto` |
 | GET | `` | pub | → `DomainDto[]` |
 | GET | `/name?name=` | pub | → `DomainDto` *(stesso discorso di projects/name)* |
-| POST | `` | auth | `DomainRequest` → `DomainDto` (201) |
-| PUT | `/{id}` | auth | `DomainRequest` → `DomainDto` |
-| DELETE | `/{id}` | auth | → 204 |
+| POST | `` | **admin** | `DomainRequest` → `DomainDto` (201) |
+| PUT | `/{id}` | **admin** | `DomainRequest` → `DomainDto` |
+| DELETE | `/{id}` | **admin** | → 204 |
 
 ### Attività (`/api/activities`) — gerarchia parent/child
 | Metodo | Path | Auth | Body → Risposta |
@@ -107,9 +107,9 @@ valore diverso → 400 `Invalid_role`.
 | GET | `` | pub | → `ActivityDto[]` |
 | GET | `/roots` | pub | → `ActivityDto[]` (solo attività senza parent) |
 | GET | `/{parentId}/children` | pub | → `ActivityDto[]` |
-| POST | `` | auth | `ActivityRequest` → `ActivityDto` (201) |
-| PUT | `/{id}` | auth | `ActivityRequest` → `ActivityDto` |
-| DELETE | `/{id}` | auth | → 204 |
+| POST | `` | **admin** | `ActivityRequest` → `ActivityDto` (201) |
+| PUT | `/{id}` | **admin** | `ActivityRequest` → `ActivityDto` |
+| DELETE | `/{id}` | **admin** | → 204 |
 
 `ActivityRequest.parentId` nullable = attività radice. Un'attività non può essere
 parent di se stessa (400 `Activity_invalid_parent`).
@@ -120,27 +120,27 @@ parent di se stessa (400 `Activity_invalid_parent`).
 | GET | `/{id}` | pub | → `DoctorDto` |
 | GET | `` | pub | → `DoctorDto[]` |
 | GET | `/search?lastName=` | pub | → `DoctorDto[]` *(da sistemare: il segmento `/search` è superfluo, il filtro dovrebbe stare su `GET ''` con query param opzionale)* |
-| POST | `` | auth | `DoctorRequest` → `DoctorDto` (201) |
-| PUT | `/{id}` | auth | `DoctorRequest` → `DoctorDto` |
-| DELETE | `/{id}` | auth | → 204 |
+| POST | `` | **admin** | `DoctorRequest` → `DoctorDto` (201) |
+| PUT | `/{id}` | **admin** | `DoctorRequest` → `DoctorDto` |
+| DELETE | `/{id}` | **admin** | → 204 |
 
 ### Sessioni (`/api/sessions`)
 | Metodo | Path | Auth | Body → Risposta |
 |---|---|---|---|
 | GET | `/{id}` | pub | → `SessionDto` |
 | GET | `` | pub | → `SessionDto[]` |
-| POST | `` | auth | `SessionRequest` → `SessionDto` (201) |
-| PUT | `/{id}` | auth | `SessionRequest` → `SessionDto` |
-| DELETE | `/{id}` | auth | → 204 |
+| POST | `` | **admin** | `SessionRequest` → `SessionDto` (201) |
+| PUT | `/{id}` | **admin** | `SessionRequest` → `SessionDto` |
+| DELETE | `/{id}` | **admin** | → 204 |
 
 ### Tipi soggetto (`/api/subject-types`)
 | Metodo | Path | Auth | Body → Risposta |
 |---|---|---|---|
 | GET | `/{id}` | pub | → `SubjectTypeDto` |
 | GET | `` | pub | → `SubjectTypeDto[]` |
-| POST | `` | auth | `SubjectTypeRequest` → `SubjectTypeDto` (201) |
-| PUT | `/{id}` | auth | `SubjectTypeRequest` → `SubjectTypeDto` |
-| DELETE | `/{id}` | auth | → 204 |
+| POST | `` | **admin** | `SubjectTypeRequest` → `SubjectTypeDto` (201) |
+| PUT | `/{id}` | **admin** | `SubjectTypeRequest` → `SubjectTypeDto` |
+| DELETE | `/{id}` | **admin** | → 204 |
 
 ### Soggetti (`/api/subjects`)
 | Metodo | Path | Auth | Body → Risposta |
@@ -164,8 +164,8 @@ Se non gestisci questo flag rischi soggetti duplicati silenziosi.
 | GET | `/{id}` | pub | → `RegistrationDto` |
 | GET | `` | pub | → `RegistrationDto[]` |
 | POST | `` | pub | `RegistrationRequest` → `RegistrationDto` (201) |
-| PUT | `/{id}` | auth | `RegistrationRequest` → `RegistrationDto` |
-| DELETE | `/{id}` | auth | → 204 |
+| PUT | `/{id}` | **admin** | `RegistrationRequest` → `RegistrationDto` |
+| DELETE | `/{id}` | **admin** | → 204 |
 
 `operatorIds` max 5 elementi (`@Size(max=5)`), `subjectIds`/`activityIds` non
 vuoti. `PUT`/`DELETE` leggono l'id operatore dal claim `uid` del JWT per l'audit
@@ -177,14 +177,12 @@ log — **richiedono un token valido con quel claim**, non solo un utente generi
 | GET | `/{id}` | auth | → `ModificationRequestDto` |
 | GET | `?status=` | auth | → `ModificationRequestDto[]` (status opzionale: `PENDING`/`APPROVED`/`REJECTED`, case-insensitive; senza filtro torna tutto; valore non valido → 400 `Invalid_status`) |
 | POST | `` | pub | `ModificationRequestRequest` → `ModificationRequestDto` (201) |
-| PUT | `/{id}` | auth | `ModificationRequestDecision` → `ModificationRequestDto` |
+| PUT | `/{id}` | **admin** | `ModificationRequestDecision` → `ModificationRequestDto` |
 
 `PUT /{id}` è l'azione di approvazione/rifiuto (`decide`): `approve: true/false`,
 `rejectionReason` obbligatorio solo lato UX se `approve = false` (non validato
-server-side come NotBlank condizionale). **Nota**: oggi qualunque utente
-autenticato (anche OPERATOR) può chiamare questo endpoint, non solo ADMIN — è un
-gap noto lato backend, non ancora sistemato. Se serve, va gestito lato UI
-nascondendo l'azione ai non-admin, sapendo che non è comunque bloccato dal server.
+server-side come NotBlank condizionale). Riservato ad ADMIN via `@PreAuthorize`
+(fix applicato — in precedenza qualunque utente autenticato poteva chiamarlo).
 
 ### Audit log (`/api/audit-logs`) — sola lettura
 | Metodo | Path | Auth | Body → Risposta |
@@ -209,9 +207,9 @@ LoginResponse        { token: string }
 
 // --- Operator (= utente applicativo) ---
 CreateUserRequest    { firstName: string; lastName: string; email: string; password: string; role: string }
-                      // firstName/lastName max 50, email valida max 100
-                      // password: >=12 caratteri, almeno 1 minuscola, 1 maiuscola, 1 cifra, 1 simbolo, non comune (es. "password123")
-                      // role: "OPERATOR" | "ADMIN"
+// firstName/lastName max 50, email valida max 100
+// password: >=12 caratteri, almeno 1 minuscola, 1 maiuscola, 1 cifra, 1 simbolo, non comune (es. "password123")
+// role: "OPERATOR" | "ADMIN"
 OperatorRequest       { firstName: string; lastName: string; email: string; role: string }   // update, NO password
 ResetPasswordRequest  { newPassword: string }   // stesse regole di StrongPassword
 OperatorDto           { id: number; firstName: string; lastName: string; email: string; role: string }
@@ -241,36 +239,36 @@ SubjectSaveResult   { subject: SubjectDto; codeAlreadyExists: boolean }
 
 // --- Registration (entità centrale) ---
 RegistrationDto     {
-  id: number; projectId: number; projectName: string;
-  domainId: number; domainName: string;
-  sessionId: number; sessionName: string;
-  doctorId: number | null; doctorFullName: string | null;
-  activityDate: string;          // ISO date "2026-08-31"
-  durationMinutes: number;
-  operatorIds: number[]; subjectIds: number[]; activityIds: number[];
-  createdAt: string;             // ISO datetime
+    id: number; projectId: number; projectName: string;
+    domainId: number; domainName: string;
+    sessionId: number; sessionName: string;
+    doctorId: number | null; doctorFullName: string | null;
+    activityDate: string;          // ISO date "2026-08-31"
+    durationMinutes: number;
+    operatorIds: number[]; subjectIds: number[]; activityIds: number[];
+    createdAt: string;             // ISO datetime
 }
 RegistrationRequest {
-  projectId: number; domainId: number; sessionId: number; doctorId: number | null;
-  activityDate: string; durationMinutes: number;
-  operatorIds: number[];  // 1-5 elementi, obbligatorio
-  subjectIds: number[];   // non vuoto
-  activityIds: number[];  // non vuoto
+    projectId: number; domainId: number; sessionId: number; doctorId: number | null;
+    activityDate: string; durationMinutes: number;
+    operatorIds: number[];  // 1-5 elementi, obbligatorio
+    subjectIds: number[];   // non vuoto
+    activityIds: number[];  // non vuoto
 }
 
 // --- Modification request ---
 ModificationRequestDto {
-  id: number; registrationId: number; operatorId: number; operatorFullName: string;
-  newActivityDate: string | null; newDurationMinutes: number | null;
-  newSessionId: number | null; newDoctorId: number | null;
-  reason: string; status: "PENDING" | "APPROVED" | "REJECTED";
-  submittedAt: string; handledByAdminId: number | null; handledAt: string | null;
-  rejectionReason: string | null;
+    id: number; registrationId: number; operatorId: number; operatorFullName: string;
+    newActivityDate: string | null; newDurationMinutes: number | null;
+    newSessionId: number | null; newDoctorId: number | null;
+    reason: string; status: "PENDING" | "APPROVED" | "REJECTED";
+    submittedAt: string; handledByAdminId: number | null; handledAt: string | null;
+    rejectionReason: string | null;
 }
 ModificationRequestRequest {
-  registrationId: number; operatorId: number;
-  newActivityDate?: string; newDurationMinutes?: number; newSessionId?: number; newDoctorId?: number;
-  reason: string;   // obbligatorio
+    registrationId: number; operatorId: number;
+    newActivityDate?: string; newDurationMinutes?: number; newSessionId?: number; newDoctorId?: number;
+    reason: string;   // obbligatorio
 }
 ModificationRequestDecision { approve: boolean; rejectionReason?: string }
 

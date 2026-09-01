@@ -5,6 +5,7 @@ import org.generation.italy.model.dto.ActivityDto;
 import org.generation.italy.model.dto.ActivityRequest;
 import org.generation.italy.services.ActivityService;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -40,16 +41,19 @@ public class ActivityController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasRole('ADMIN')")
     public ActivityDto create(@Valid @RequestBody ActivityRequest request) {
         return activityService.createActivity(request);
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ActivityDto update(@PathVariable Integer id, @Valid @RequestBody ActivityRequest request) {
         return activityService.updateActivity(id, request);
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Integer id) {
         activityService.deleteActivity(id);

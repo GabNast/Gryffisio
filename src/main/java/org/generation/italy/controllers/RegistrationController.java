@@ -10,6 +10,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
@@ -46,6 +47,7 @@ public class RegistrationController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public RegistrationDto update(@PathVariable Long id, @Valid @RequestBody RegistrationRequest request, @AuthenticationPrincipal Jwt jwt) {
         Integer adminId = extractOperatorId(jwt);
         return registrationService.updateRegistration(id, request, adminId);
@@ -53,6 +55,7 @@ public class RegistrationController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasRole('ADMIN')")
     public void delete(@PathVariable Long id, @AuthenticationPrincipal Jwt jwt) {
         Integer adminId = extractOperatorId(jwt);
         registrationService.deleteRegistration(id, adminId);

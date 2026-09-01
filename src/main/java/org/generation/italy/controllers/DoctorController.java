@@ -5,6 +5,7 @@ import org.generation.italy.model.dto.DoctorDto;
 import org.generation.italy.model.dto.DoctorRequest;
 import org.generation.italy.services.DoctorService;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -35,16 +36,19 @@ public class DoctorController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasRole('ADMIN')")
     public DoctorDto create(@Valid @RequestBody DoctorRequest request) {
         return doctorService.createDoctor(request);
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public DoctorDto update(@PathVariable Integer id, @Valid @RequestBody DoctorRequest request) {
         return doctorService.updateDoctor(id, request);
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Integer id) {
         doctorService.deleteDoctor(id);

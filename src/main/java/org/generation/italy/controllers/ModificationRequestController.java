@@ -6,6 +6,7 @@ import org.generation.italy.model.dto.ModificationRequestDto;
 import org.generation.italy.model.dto.ModificationRequestRequest;
 import org.generation.italy.services.ModificationRequestService;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
@@ -38,6 +39,7 @@ public class ModificationRequestController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ModificationRequestDto decide(
             @PathVariable Long id,
             @Valid @RequestBody ModificationRequestDecision decision,

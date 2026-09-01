@@ -6,6 +6,7 @@ import org.generation.italy.model.dto.SubjectRequest;
 import org.generation.italy.model.dto.SubjectSaveResult;
 import org.generation.italy.services.SubjectService;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -41,11 +42,13 @@ public class SubjectController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public SubjectSaveResult update(@PathVariable Long id, @Valid @RequestBody SubjectRequest request) {
         return subjectService.updateSubject(id, request);
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id) {
         subjectService.deleteSubject(id);
