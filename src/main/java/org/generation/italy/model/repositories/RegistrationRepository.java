@@ -12,23 +12,32 @@ public interface RegistrationRepository extends JpaRepository<Registration, Long
     long countByProject_Id(Long projectId);
 
     @Query(value = """
+            with intervention_totals as (
+                select operator_registration.researcher_id,
+                       count(registration.id) as interventions,
+                       coalesce(sum(registration.duration_minutes), 0) as total_minutes
+                from operator_registration
+                join registration
+                  on registration.id = operator_registration.registration_id
+                group by operator_registration.researcher_id
+            ), evaluation_totals as (
+                select operator_registration.researcher_id,
+                       count(evaluation.id) as evaluations
+                from operator_registration
+                join evaluation
+                  on evaluation.registration_id = operator_registration.registration_id
+                group by operator_registration.researcher_id
+            )
             select researcher.id as "operatorId",
                    concat(researcher.name, ' ', researcher.surname) as "operatorName",
-                   count(registration.id) as interventions,
-                   (
-                       select count(*)
-                       from evaluation operator_evaluation
-                       join operator_registration operator_assignment
-                         on operator_assignment.registration_id = operator_evaluation.registration_id
-                       where operator_assignment.researcher_id = researcher.id
-                   ) as evaluations,
-                   coalesce(sum(registration.duration_minutes), 0) as "totalMinutes"
+                   coalesce(intervention_totals.interventions, 0) as interventions,
+                   coalesce(evaluation_totals.evaluations, 0) as evaluations,
+                   coalesce(intervention_totals.total_minutes, 0) as "totalMinutes"
             from researcher
-            join operator_registration
-              on operator_registration.researcher_id = researcher.id
-            join registration
-              on registration.id = operator_registration.registration_id
-            group by researcher.id, researcher.name, researcher.surname
+            left join intervention_totals
+              on intervention_totals.researcher_id = researcher.id
+            left join evaluation_totals
+              on evaluation_totals.researcher_id = researcher.id
             order by researcher.surname, researcher.name
             """, nativeQuery = true)
     List<OperatorDashboardProjection> findOperatorDashboardSummaries();

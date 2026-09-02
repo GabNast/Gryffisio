@@ -18,24 +18,31 @@ public interface EvaluationRepository extends JpaRepository<Evaluation, Integer>
     long countByProjectId(@Param("projectId") Long projectId);
 
     @Query(value = """
+            with evaluation_totals as (
+                select evaluation.session_type_id,
+                       count(evaluation.id) as evaluations
+                from evaluation
+                group by evaluation.session_type_id
+            ), intervention_totals as (
+                select typed_registration.session_type_id,
+                       coalesce(sum(registration.duration_minutes), 0) as total_minutes
+                from (
+                    select distinct evaluation.session_type_id, evaluation.registration_id
+                    from evaluation
+                ) typed_registration
+                join registration
+                  on registration.id = typed_registration.registration_id
+                group by typed_registration.session_type_id
+            )
             select session_type.id as "sessionTypeId",
                    session_type.name as "sessionTypeName",
-                   (
-                       select count(*)
-                       from evaluation evaluation_count
-                       where evaluation_count.session_type_id = session_type.id
-                   ) as evaluations,
-                   coalesce((
-                       select sum(registration.duration_minutes)
-                       from registration
-                       where exists (
-                           select 1
-                           from evaluation evaluation_duration
-                           where evaluation_duration.registration_id = registration.id
-                             and evaluation_duration.session_type_id = session_type.id
-                       )
-                   ), 0) as "totalMinutes"
+                   coalesce(evaluation_totals.evaluations, 0) as evaluations,
+                   coalesce(intervention_totals.total_minutes, 0) as "totalMinutes"
             from session_type
+            left join evaluation_totals
+              on evaluation_totals.session_type_id = session_type.id
+            left join intervention_totals
+              on intervention_totals.session_type_id = session_type.id
             order by session_type.name
             """, nativeQuery = true)
     List<InterventionTypeDashboardProjection> findInterventionTypeDashboardSummaries();
