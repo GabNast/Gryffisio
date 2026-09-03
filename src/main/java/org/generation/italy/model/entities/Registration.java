@@ -8,189 +8,103 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name="registration")
+@Table(name = "registrations")
 public class Registration {
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "domain_id", nullable = false)
-    private Domain domain;
-
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "project_id", nullable = false)
     private Project project;
 
-
-    @Column(name="date",nullable = true)
-    private LocalDate date;
-
-    @Column(name="duration_minutes", nullable = false)
-    private Integer durationMinutes;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "referring_doctor_id")
-    private ReferringDoctor referringDoctor;
-
-    @Column(name="creation_date", nullable = false)
-    private LocalDateTime creationDate;
-
-    @Column(name="last_modified_date")
-    private LocalDateTime lastModifiedDate;
-
-    @Column(name="is_modified", nullable = false)
-    private Boolean isModified = false;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "domain_id", nullable = false)
+    private Domain domain;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "patient_id", nullable = false)
-    private Patient patient;
+    @JoinColumn(name = "session_id", nullable = false)
+    private Session session;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "doctor_id")
+    private Doctor doctor;
+
+    @Column(name = "activity_date", nullable = false)
+    private LocalDate activityDate;
+
+    @Column(name = "duration_minutes", nullable = false)
+    private Integer durationMinutes;
+
+    @Column(name = "created_at", nullable = false)
+    private LocalDateTime createdAt;
+
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 
     @ManyToMany
     @JoinTable(
-            name="operator_registration",
+            name = "registration_operators",
             joinColumns = @JoinColumn(name = "registration_id"),
-            inverseJoinColumns = @JoinColumn(name="researcher_id")
+            inverseJoinColumns = @JoinColumn(name = "operator_id")
     )
-    private Set<Researcher> researchers = new HashSet<>();
-
+    private Set<Operator> operators = new HashSet<>();
 
     @ManyToMany
     @JoinTable(
-            name="registration_subject",
+            name = "registration_subjects",
             joinColumns = @JoinColumn(name = "registration_id"),
-            inverseJoinColumns = @JoinColumn(name="patient_id")
+            inverseJoinColumns = @JoinColumn(name = "subject_id")
     )
-    private Set<Patient> patients = new HashSet<>();
+    private Set<Subject> subjects = new HashSet<>();
 
     @ManyToMany
     @JoinTable(
-            name="test_registration",
+            name = "registration_activities",
             joinColumns = @JoinColumn(name = "registration_id"),
-            inverseJoinColumns = @JoinColumn(name="test_id")
+            inverseJoinColumns = @JoinColumn(name = "activity_id")
     )
-    private Set<Test> tests = new HashSet<>();
+    private Set<Activity> activities = new HashSet<>();
 
-    public Registration(Long id, Domain domain, Project project, ReferringDoctor referringDoctor, LocalDate date, Integer durationMinutes, LocalDateTime creationDate, LocalDateTime lastModifiedDate, Boolean isModified, Set<Researcher> researchers, Set<Patient> patients, Set<Test> tests, Patient patient) {
+    public Registration() {}
+
+    public Registration(Long id, Project project, Domain domain, Session session, Doctor doctor, LocalDate activityDate, Integer durationMinutes, LocalDateTime createdAt, Set<Operator> operators, Set<Subject> subjects, Set<Activity> activities,  LocalDateTime updatedAt) {
         this.id = id;
-        this.domain = domain;
         this.project = project;
-        this.referringDoctor = referringDoctor;
-        this.date = date;
-        this.durationMinutes = durationMinutes;
-        this.creationDate = creationDate;
-        this.lastModifiedDate = lastModifiedDate;
-        this.isModified = isModified;
-        this.researchers = researchers;
-        this.patients = patients;
-        this.tests = tests;
-        this.patient = patient;
-    }
-
-    public Registration() {
-    }
-
-    public Patient getPatient() {
-        return patient;
-    }
-
-    public void setPatient(Patient patient) {
-        this.patient = patient;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Domain getDomain() {
-        return domain;
-    }
-
-    public void setDomain(Domain domain) {
         this.domain = domain;
-    }
-
-    public Project getProject() {
-        return project;
-    }
-
-    public void setProject(Project project) {
-        this.project = project;
-    }
-
-    public ReferringDoctor getReferringDoctor() {
-        return referringDoctor;
-    }
-
-    public void setReferringDoctor(ReferringDoctor referringDoctor) {
-        this.referringDoctor = referringDoctor;
-    }
-
-    public LocalDate getDate() {
-        return date;
-    }
-
-    public void setDate(LocalDate date) {
-        this.date = date;
-    }
-
-    public Integer getDurationMinutes() {
-        return durationMinutes;
-    }
-
-    public void setDurationMinutes(Integer durationMinutes) {
+        this.session = session;
+        this.doctor = doctor;
+        this.activityDate = activityDate;
         this.durationMinutes = durationMinutes;
+        this.createdAt = createdAt;
+        this.operators = operators;
+        this.subjects = subjects;
+        this.activities = activities;
+        this.updatedAt = updatedAt;
     }
 
-    public LocalDateTime getCreationDate() {
-        return creationDate;
-    }
-
-    public void setCreationDate(LocalDateTime creationDate) {
-        this.creationDate = creationDate;
-    }
-
-    public LocalDateTime getLastModifiedDate() {
-        return lastModifiedDate;
-    }
-
-    public void setLastModifiedDate(LocalDateTime lastModifiedDate) {
-        this.lastModifiedDate = lastModifiedDate;
-    }
-
-    public Boolean getModified() {
-        return isModified;
-    }
-
-    public void setModified(Boolean modified) {
-        isModified = modified;
-    }
-
-    public Set<Researcher> getResearchers() {
-        return researchers;
-    }
-
-    public void setResearchers(Set<Researcher> researchers) {
-        this.researchers = researchers;
-    }
-
-    public Set<Patient> getPatients() {
-        return patients;
-    }
-
-    public void setPatients(Set<Patient> patients) {
-        this.patients = patients;
-    }
-
-    public Set<Test> getTests() {
-        return tests;
-    }
-
-    public void setTests(Set<Test> tests) {
-        this.tests = tests;
-    }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+    public Project getProject() { return project; }
+    public void setProject(Project project) { this.project = project; }
+    public Domain getDomain() { return domain; }
+    public void setDomain(Domain domain) { this.domain = domain; }
+    public Session getSession() { return session; }
+    public void setSession(Session session) { this.session = session; }
+    public Doctor getDoctor() { return doctor; }
+    public void setDoctor(Doctor doctor) { this.doctor = doctor; }
+    public LocalDate getActivityDate() { return activityDate; }
+    public void setActivityDate(LocalDate activityDate) { this.activityDate = activityDate; }
+    public Integer getDurationMinutes() { return durationMinutes; }
+    public void setDurationMinutes(Integer durationMinutes) { this.durationMinutes = durationMinutes; }
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+    public Set<Operator> getOperators() { return operators; }
+    public void setOperators(Set<Operator> operators) { this.operators = operators; }
+    public Set<Subject> getSubjects() { return subjects; }
+    public void setSubjects(Set<Subject> subjects) { this.subjects = subjects; }
+    public Set<Activity> getActivities() { return activities; }
+    public void setActivities(Set<Activity> activities) { this.activities = activities; }
+    public LocalDateTime getUpdatedAt() { return updatedAt; }
+    public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
 }

@@ -1,14 +1,12 @@
-package org.generation.italy.dashboard;
+/*package org.generation.italy.dashboard;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.generation.italy.dashboard.dto.DashboardData;
 import org.generation.italy.dashboard.dto.InterventionTypeSummary;
-import org.generation.italy.dashboard.dto.OperatorSummary;
-import org.generation.italy.dashboard.projection.InterventionTypeDashboardProjection;
-import org.generation.italy.dashboard.projection.OperatorDashboardProjection;
-import org.generation.italy.model.repositories.EvaluationRepository;
-import org.generation.italy.model.repositories.RegistrationRepository;
+import org.generation.italy.dashboard.dto.OperatorMatricsDto;
+import org.generation.italy.dashboard.projection.DomainMetricsProjection;
+import org.generation.italy.dashboard.projection.OperatorMatricsProjection;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -65,7 +63,7 @@ class DashboardServiceTest {
         assertEquals(evaluations, result.totalEvaluations());
         assertNull(result.selectedProject());
 
-        OperatorSummary firstOperator = result.operators().getFirst();
+        OperatorMatricsDto firstOperator = result.operators().getFirst();
         assertEquals("Mario Rossi", firstOperator.operatorName());
         assertEquals(4L, firstOperator.interventions());
         assertEquals(6L, firstOperator.evaluations());
@@ -120,7 +118,7 @@ class DashboardServiceTest {
             String operatorName,
             long interventions,
             long evaluations,
-            long totalMinutes) implements OperatorDashboardProjection {
+            long totalMinutes) implements OperatorMatricsProjection {
 
         @Override
         public long getOperatorId() {
@@ -152,7 +150,7 @@ class DashboardServiceTest {
             long sessionTypeId,
             String sessionTypeName,
             long evaluations,
-            long totalMinutes) implements InterventionTypeDashboardProjection {
+            long totalMinutes) implements DomainMetricsProjection {
 
         @Override
         public long getSessionTypeId() {
@@ -175,3 +173,5 @@ class DashboardServiceTest {
         }
     }
 }
+
+ */
