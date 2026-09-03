@@ -50,7 +50,7 @@ public class OperatorService {
     }
 
     @Transactional(readOnly = true)
-    public OperatorDto findById(Integer id) {
+    public OperatorDto findById(Integer id) throws NotFoundException {
         Operator operator = operatorRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Operator_not_found", "Operator not found: " + id));
         return toDto(operator);
@@ -73,7 +73,7 @@ public class OperatorService {
     }
 
     @Transactional
-    public OperatorDto resetPassword(Integer id, String newPassword) {
+    public OperatorDto resetPassword(Integer id, String newPassword) throws NotFoundException {
         Operator operator = operatorRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Operator_not_found", "Operator not found: " + id));
 
@@ -82,7 +82,7 @@ public class OperatorService {
     }
 
     @Transactional
-    public OperatorDto updateOperator(Integer id, OperatorRequest request) {
+    public OperatorDto updateOperator(Integer id, OperatorRequest request) throws NotFoundException {
         Operator operator = operatorRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Operator_not_found", "Operator not found: " + id));
 
@@ -98,7 +98,7 @@ public class OperatorService {
     }
 
     @Transactional
-    public void deleteOperator(Integer id) {
+    public void deleteOperator(Integer id) throws NotFoundException {
         if (!operatorRepository.existsById(id)) {
             throw new NotFoundException("Operator_not_found", "Operator not found: " + id);
         }

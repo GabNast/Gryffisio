@@ -80,14 +80,14 @@ public class ModificationRequestService {
     }
 
     @Transactional(readOnly = true)
-    public ModificationRequestDto findById(Long id) {
+    public ModificationRequestDto findById(Long id) throws NotFoundException {
         ModificationRequest mr = modificationRequestRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Modification_request_not_found", "Modification request not found: " + id));
         return toDto(mr);
     }
 
     @Transactional
-    public ModificationRequestDto create(ModificationRequestRequest request) {
+    public ModificationRequestDto create(ModificationRequestRequest request) throws NotFoundException {
         Registration registration = registrationRepository.findById(request.registrationId())
                 .orElseThrow(() -> new NotFoundException("Registration_not_found", "Registration not found: " + request.registrationId()));
 
@@ -122,7 +122,7 @@ public class ModificationRequestService {
     }
 
     @Transactional
-    public ModificationRequestDto decide(Long id, Integer adminId, ModificationRequestDecision decision) {
+    public ModificationRequestDto decide(Long id, Integer adminId, ModificationRequestDecision decision) throws NotFoundException {
         ModificationRequest mr = modificationRequestRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Modification_request_not_found", "Modification request not found: " + id));
 

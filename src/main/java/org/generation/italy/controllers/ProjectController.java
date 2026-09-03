@@ -3,6 +3,7 @@ package org.generation.italy.controllers;
 import jakarta.validation.Valid;
 import org.generation.italy.model.dto.ProjectDto;
 import org.generation.italy.model.dto.ProjectRequest;
+import org.generation.italy.model.exceptions.NotFoundException;
 import org.generation.italy.services.ProjectService;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -20,7 +21,7 @@ public class ProjectController {
     }
 
     @GetMapping("/{id}")
-    public ProjectDto getById(@PathVariable Integer id) {
+    public ProjectDto getById(@PathVariable Integer id) throws NotFoundException {
         return projectService.findById(id);
     }
 
@@ -30,12 +31,12 @@ public class ProjectController {
     }
 
     @GetMapping("/name")
-    public ProjectDto getByName(@RequestParam String name) {
+    public ProjectDto getByName(@RequestParam String name) throws NotFoundException {
         return projectService.findByName(name);
     }
 
     @GetMapping("/code")
-    public ProjectDto getByCode(@RequestParam String code) {
+    public ProjectDto getByCode(@RequestParam String code) throws NotFoundException {
         return projectService.findByCode(code);
     }
 
@@ -48,14 +49,14 @@ public class ProjectController {
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ProjectDto update(@PathVariable Integer id, @Valid @RequestBody ProjectRequest request) {
+    public ProjectDto update(@PathVariable Integer id, @Valid @RequestBody ProjectRequest request) throws NotFoundException {
         return projectService.updateProject(id, request);
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable Integer id) {
+    public void delete(@PathVariable Integer id) throws NotFoundException {
         projectService.deleteProject(id);
     }
 }

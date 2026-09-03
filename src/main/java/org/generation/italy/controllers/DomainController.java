@@ -3,6 +3,7 @@ package org.generation.italy.controllers;
 import jakarta.validation.Valid;
 import org.generation.italy.model.dto.DomainDto;
 import org.generation.italy.model.dto.DomainRequest;
+import org.generation.italy.model.exceptions.NotFoundException;
 import org.generation.italy.services.DomainService;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -20,12 +21,12 @@ public class DomainController {
     }
 
     @GetMapping("/{id}")
-    public DomainDto getById(@PathVariable Integer id) {
+    public DomainDto getById(@PathVariable Integer id) throws NotFoundException {
         return domainService.findById(id);
     }
 
     @GetMapping("/name")
-    public DomainDto getByName(@RequestParam String name) {
+    public DomainDto getByName(@RequestParam String name) throws NotFoundException {
         return  domainService.findByName(name);
     }
 
@@ -37,20 +38,20 @@ public class DomainController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasRole('ADMIN')")
-    public DomainDto create(@Valid @RequestBody DomainRequest request) {
+    public DomainDto create(@Valid @RequestBody DomainRequest request) throws NotFoundException {
         return domainService.createDomain(request);
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public DomainDto update(@PathVariable Integer id, @Valid @RequestBody DomainRequest request) {
+    public DomainDto update(@PathVariable Integer id, @Valid @RequestBody DomainRequest request) throws NotFoundException {
         return domainService.updateDomain(id, request);
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable Integer id) {
+    public void delete(@PathVariable Integer id) throws NotFoundException {
         domainService.deleteDomain(id);
     }
 }

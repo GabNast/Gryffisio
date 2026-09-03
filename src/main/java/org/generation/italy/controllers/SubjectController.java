@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import org.generation.italy.model.dto.SubjectDto;
 import org.generation.italy.model.dto.SubjectRequest;
 import org.generation.italy.model.dto.SubjectSaveResult;
+import org.generation.italy.model.exceptions.NotFoundException;
 import org.generation.italy.services.SubjectService;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -21,7 +22,7 @@ public class SubjectController {
     }
 
     @GetMapping("/{id}")
-    public SubjectDto getById(@PathVariable Long id) {
+    public SubjectDto getById(@PathVariable Long id) throws NotFoundException {
         return subjectService.findById(id);
     }
 
@@ -37,20 +38,20 @@ public class SubjectController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public SubjectSaveResult create(@Valid @RequestBody SubjectRequest request) {
+    public SubjectSaveResult create(@Valid @RequestBody SubjectRequest request) throws NotFoundException {
         return subjectService.createSubject(request);
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public SubjectSaveResult update(@PathVariable Long id, @Valid @RequestBody SubjectRequest request) {
+    public SubjectSaveResult update(@PathVariable Long id, @Valid @RequestBody SubjectRequest request) throws NotFoundException {
         return subjectService.updateSubject(id, request);
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable Long id) {
+    public void delete(@PathVariable Long id) throws NotFoundException {
         subjectService.deleteSubject(id);
     }
 }

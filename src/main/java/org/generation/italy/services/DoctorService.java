@@ -30,7 +30,7 @@ public class DoctorService {
     }
 
     @Transactional(readOnly = true)
-    public DoctorDto findById(Integer id) {
+    public DoctorDto findById(Integer id) throws NotFoundException {
         Doctor doctor = doctorRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Doctor_not_found", "Doctor not found: " + id));
         return toDto(doctor);
@@ -53,7 +53,7 @@ public class DoctorService {
     }
 
     @Transactional
-    public DoctorDto updateDoctor(Integer id, DoctorRequest request) {
+    public DoctorDto updateDoctor(Integer id, DoctorRequest request) throws NotFoundException {
         Doctor doctor = doctorRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Doctor_not_found", "Doctor not found: " + id));
 
@@ -63,7 +63,7 @@ public class DoctorService {
     }
 
     @Transactional
-    public void deleteDoctor(Integer id) {
+    public void deleteDoctor(Integer id) throws NotFoundException {
         if (!doctorRepository.existsById(id)) {
             throw new NotFoundException("Doctor_not_found", "Doctor not found: " + id);
         }

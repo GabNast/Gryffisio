@@ -3,6 +3,7 @@ package org.generation.italy.controllers;
 import jakarta.validation.Valid;
 import org.generation.italy.model.dto.SubjectTypeDto;
 import org.generation.italy.model.dto.SubjectTypeRequest;
+import org.generation.italy.model.exceptions.NotFoundException;
 import org.generation.italy.services.SubjectTypeService;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -20,7 +21,7 @@ public class SubjectTypeController {
     }
 
     @GetMapping("/{id}")
-    public SubjectTypeDto getById(@PathVariable Integer id) {
+    public SubjectTypeDto getById(@PathVariable Integer id) throws NotFoundException {
         return subjectTypeService.findById(id);
     }
 
@@ -38,14 +39,14 @@ public class SubjectTypeController {
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public SubjectTypeDto update(@PathVariable Integer id, @Valid @RequestBody SubjectTypeRequest request) {
+    public SubjectTypeDto update(@PathVariable Integer id, @Valid @RequestBody SubjectTypeRequest request) throws NotFoundException {
         return subjectTypeService.updateSubjectType(id, request);
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable Integer id) {
+    public void delete(@PathVariable Integer id) throws NotFoundException {
         subjectTypeService.deleteSubjectType(id);
     }
 }

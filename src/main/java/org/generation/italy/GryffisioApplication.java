@@ -9,3 +9,4 @@ public class GryffisioApplication {
         SpringApplication.run(GryffisioApplication.class, args);
     }
 }
+

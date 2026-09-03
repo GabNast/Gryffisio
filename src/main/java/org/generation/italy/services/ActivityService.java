@@ -36,7 +36,7 @@ public class ActivityService {
     }
 
     @Transactional(readOnly = true)
-    public ActivityDto findById(Integer id) {
+    public ActivityDto findById(Integer id) throws NotFoundException {
         Activity activity = activityRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Activity_not_found", "Activity not found: " + id));
         return toDto(activity);
@@ -57,7 +57,7 @@ public class ActivityService {
     }
 
     @Transactional
-    public ActivityDto createActivity(ActivityRequest request) {
+    public ActivityDto createActivity(ActivityRequest request) throws NotFoundException {
         Activity parent = resolveParent(request.parentId(), null);
 
         Activity activity = new Activity();
@@ -68,7 +68,7 @@ public class ActivityService {
     }
 
     @Transactional
-    public ActivityDto updateActivity(Integer id, ActivityRequest request) {
+    public ActivityDto updateActivity(Integer id, ActivityRequest request) throws NotFoundException {
         Activity activity = activityRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Activity_not_found", "Activity not found: " + id));
 
@@ -79,7 +79,7 @@ public class ActivityService {
         return toDto(activityRepository.save(activity));
     }
 
-    private Activity resolveParent(Integer parentId, Integer selfId) {
+    private Activity resolveParent(Integer parentId, Integer selfId) throws NotFoundException {
         if (parentId == null) {
             return null;
         }
@@ -91,7 +91,7 @@ public class ActivityService {
     }
 
     @Transactional
-    public void deleteActivity(Integer id) {
+    public void deleteActivity(Integer id) throws NotFoundException {
         if (!activityRepository.existsById(id)) {
             throw new NotFoundException("Activity_not_found", "Activity not found: " + id);
         }

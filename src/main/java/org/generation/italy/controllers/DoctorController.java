@@ -3,6 +3,7 @@ package org.generation.italy.controllers;
 import jakarta.validation.Valid;
 import org.generation.italy.model.dto.DoctorDto;
 import org.generation.italy.model.dto.DoctorRequest;
+import org.generation.italy.model.exceptions.NotFoundException;
 import org.generation.italy.services.DoctorService;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -20,7 +21,7 @@ public class DoctorController {
     }
 
     @GetMapping("/{id}")
-    public DoctorDto getById(@PathVariable Integer id) {
+    public DoctorDto getById(@PathVariable Integer id) throws NotFoundException {
         return doctorService.findById(id);
     }
 
@@ -43,14 +44,14 @@ public class DoctorController {
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public DoctorDto update(@PathVariable Integer id, @Valid @RequestBody DoctorRequest request) {
+    public DoctorDto update(@PathVariable Integer id, @Valid @RequestBody DoctorRequest request) throws NotFoundException {
         return doctorService.updateDoctor(id, request);
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable Integer id) {
+    public void delete(@PathVariable Integer id) throws NotFoundException {
         doctorService.deleteDoctor(id);
     }
 }
