@@ -3,6 +3,7 @@ package org.generation.italy.controllers;
 import jakarta.validation.Valid;
 import org.generation.italy.model.dto.LoginRequest;
 import org.generation.italy.model.dto.LoginResponse;
+import org.generation.italy.model.exceptions.NotFoundException;
 import org.generation.italy.services.AuthService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +18,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public LoginResponse login(@Valid @RequestBody LoginRequest request) {
+    public LoginResponse login(@Valid @RequestBody LoginRequest request) throws NotFoundException {
         return authService.login(request);
     }
 

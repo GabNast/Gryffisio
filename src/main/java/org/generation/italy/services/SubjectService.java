@@ -46,7 +46,7 @@ public class SubjectService {
     }
 
     @Transactional(readOnly = true)
-    public SubjectDto findById(Long id) {
+    public SubjectDto findById(Long id) throws NotFoundException {
         Subject subject = subjectRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Subject_not_found", "Subject not found: " + id));
         return toDto(subject);
@@ -60,7 +60,7 @@ public class SubjectService {
     }
 
     @Transactional
-    public SubjectSaveResult createSubject(SubjectRequest request) {
+    public SubjectSaveResult createSubject(SubjectRequest request) throws NotFoundException {
         Project project = projectRepository.findById(request.projectId())
                 .orElseThrow(() -> new NotFoundException("Project_not_found", "Project not found: " + request.projectId()));
 
@@ -79,7 +79,7 @@ public class SubjectService {
     }
 
     @Transactional
-    public SubjectSaveResult updateSubject(Long id, SubjectRequest request) {
+    public SubjectSaveResult updateSubject(Long id, SubjectRequest request) throws NotFoundException {
         Subject subject = subjectRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Subject_not_found", "Subject not found: " + id));
 
@@ -100,7 +100,7 @@ public class SubjectService {
     }
 
     @Transactional
-    public void deleteSubject(Long id) {
+    public void deleteSubject(Long id) throws NotFoundException {
         if (!subjectRepository.existsById(id)) {
             throw new NotFoundException("Subject_not_found", "Subject not found: " + id);
         }

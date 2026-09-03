@@ -3,6 +3,7 @@ package org.generation.italy.controllers;
 import jakarta.validation.Valid;
 import org.generation.italy.model.dto.SessionDto;
 import org.generation.italy.model.dto.SessionRequest;
+import org.generation.italy.model.exceptions.NotFoundException;
 import org.generation.italy.services.SessionService;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -20,7 +21,7 @@ public class SessionController {
     }
 
     @GetMapping("/{id}")
-    public SessionDto getById(@PathVariable Integer id) {
+    public SessionDto getById(@PathVariable Integer id) throws NotFoundException {
         return sessionService.findById(id);
     }
 
@@ -38,14 +39,14 @@ public class SessionController {
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public SessionDto update(@PathVariable Integer id, @Valid @RequestBody SessionRequest request) {
+    public SessionDto update(@PathVariable Integer id, @Valid @RequestBody SessionRequest request) throws NotFoundException {
         return sessionService.updateSession(id, request);
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable Integer id) {
+    public void delete(@PathVariable Integer id) throws NotFoundException {
         sessionService.deleteSession(id);
     }
 }

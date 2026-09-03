@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -74,27 +75,27 @@ public class RegistrationService {
     }
 
     @Transactional(readOnly = true)
-    public RegistrationDto findById(Long id) {
+    public RegistrationDto findById(Long id) throws NotFoundException {
         Registration registration = registrationRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Registration_not_found", "Registration not found: " + id));
         return toDto(registration);
     }
 
     @Transactional
-    public RegistrationDto createRegistration(RegistrationRequest request) {
+    public RegistrationDto createRegistration(RegistrationRequest request) throws NotFoundException {
         Registration registration = new Registration();
         applyRequest(registration, request);
         registration.setCreatedAt(LocalDateTime.now());
         Registration saved = registrationRepository.save(registration);
 
-        auditLogService.log(new java.util.HashSet<>(saved.getOperators()), "CREATE", "Registration", saved.getId(),
+        auditLogService.log(new HashSet<>(saved.getOperators()), "CREATE", "Registration", saved.getId(),
                 "Registration created via public form");
 
         return toDto(saved);
     }
 
     @Transactional
-    public RegistrationDto updateRegistration(Long id, RegistrationRequest request, Integer adminId) {
+    public RegistrationDto updateRegistration(Long id, RegistrationRequest request, Integer adminId) throws NotFoundException {
         Registration registration = registrationRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Registration_not_found", "Registration not found: " + id));
         applyRequest(registration, request);
@@ -108,7 +109,7 @@ public class RegistrationService {
         return toDto(saved);
     }
 
-    private void applyRequest(Registration registration, RegistrationRequest request) {
+    private void applyRequest(Registration registration, RegistrationRequest request) throws NotFoundException {
         Project project = projectRepository.findById(request.projectId())
                 .orElseThrow(() -> new NotFoundException("Project_not_found", "Project not found: " + request.projectId()));
 
@@ -124,17 +125,17 @@ public class RegistrationService {
                     .orElseThrow(() -> new NotFoundException("Doctor_not_found", "Doctor not found: " + request.doctorId()));
         }
 
-        Set<Operator> operators = Set.copyOf(operatorRepository.findAllById(request.operatorIds()));
+        Set<Operator> operators = new HashSet<>(operatorRepository.findAllById(request.operatorIds()));
         if (operators.size() != Set.copyOf(request.operatorIds()).size()) {
             throw new NotFoundException("Operator_not_found", "One or more operator ids do not exist");
         }
 
-        Set<Subject> subjects = Set.copyOf(subjectRepository.findAllById(request.subjectIds()));
+        Set<Subject> subjects = new HashSet<>(subjectRepository.findAllById(request.subjectIds()));
         if (subjects.size() != Set.copyOf(request.subjectIds()).size()) {
             throw new NotFoundException("Subject_not_found", "One or more subject ids do not exist");
         }
 
-        Set<Activity> activities = Set.copyOf(activityRepository.findAllById(request.activityIds()));
+        Set<Activity> activities = new HashSet<>(activityRepository.findAllById(request.activityIds()));
         if (activities.size() != Set.copyOf(request.activityIds()).size()) {
             throw new NotFoundException("Activity_not_found", "One or more activity ids do not exist");
         }
@@ -151,12 +152,13 @@ public class RegistrationService {
     }
 
     @Transactional
-    public void deleteRegistration(Long id, Integer adminId) {
+    public void deleteRegistration(Long id, Integer adminId) throws NotFoundException {
         if (!registrationRepository.existsById(id)) {
             throw new NotFoundException("Registration_not_found", "Registration not found: " + id);
         }
         Operator admin = operatorRepository.findById(adminId)
                 .orElseThrow(() -> new NotFoundException("Operator_not_found", "Operator not found: " + adminId));
-        auditLogService.log(Set.of(admin), "DELETE", "Registration", id, "Registration deleted by admin");        registrationRepository.deleteById(id);
+        auditLogService.log(Set.of(admin), "DELETE", "Registration", id, "Registration deleted by admin");
+        registrationRepository.deleteById(id);
     }
 }

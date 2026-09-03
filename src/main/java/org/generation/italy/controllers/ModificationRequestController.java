@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import org.generation.italy.model.dto.ModificationRequestDecision;
 import org.generation.italy.model.dto.ModificationRequestDto;
 import org.generation.italy.model.dto.ModificationRequestRequest;
+import org.generation.italy.model.exceptions.NotFoundException;
 import org.generation.italy.services.ModificationRequestService;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -23,7 +24,7 @@ public class ModificationRequestController {
     }
 
     @GetMapping("/{id}")
-    public ModificationRequestDto getById(@PathVariable Long id) {
+    public ModificationRequestDto getById(@PathVariable Long id) throws NotFoundException {
         return modificationRequestService.findById(id);
     }
 
@@ -34,7 +35,7 @@ public class ModificationRequestController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ModificationRequestDto create(@Valid @RequestBody ModificationRequestRequest request) {
+    public ModificationRequestDto create(@Valid @RequestBody ModificationRequestRequest request) throws NotFoundException {
         return modificationRequestService.create(request);
     }
 
@@ -44,7 +45,7 @@ public class ModificationRequestController {
             @PathVariable Long id,
             @Valid @RequestBody ModificationRequestDecision decision,
             @AuthenticationPrincipal Jwt jwt
-    ) {
+    ) throws NotFoundException {
         Number uid = jwt.getClaim("uid");
         Integer adminId = uid.intValue();
         return modificationRequestService.decide(id, adminId, decision);

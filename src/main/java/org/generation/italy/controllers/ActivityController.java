@@ -3,6 +3,7 @@ package org.generation.italy.controllers;
 import jakarta.validation.Valid;
 import org.generation.italy.model.dto.ActivityDto;
 import org.generation.italy.model.dto.ActivityRequest;
+import org.generation.italy.model.exceptions.NotFoundException;
 import org.generation.italy.services.ActivityService;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -20,7 +21,7 @@ public class ActivityController {
     }
 
     @GetMapping("/{id}")
-    public ActivityDto getById(@PathVariable Integer id) {
+    public ActivityDto getById(@PathVariable Integer id) throws NotFoundException {
         return activityService.findById(id);
     }
 
@@ -42,20 +43,20 @@ public class ActivityController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasRole('ADMIN')")
-    public ActivityDto create(@Valid @RequestBody ActivityRequest request) {
+    public ActivityDto create(@Valid @RequestBody ActivityRequest request) throws NotFoundException {
         return activityService.createActivity(request);
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ActivityDto update(@PathVariable Integer id, @Valid @RequestBody ActivityRequest request) {
+    public ActivityDto update(@PathVariable Integer id, @Valid @RequestBody ActivityRequest request) throws NotFoundException {
         return activityService.updateActivity(id, request);
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable Integer id) {
+    public void delete(@PathVariable Integer id) throws NotFoundException {
         activityService.deleteActivity(id);
     }
 }

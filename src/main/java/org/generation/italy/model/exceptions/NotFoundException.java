@@ -1,6 +1,6 @@
 package org.generation.italy.model.exceptions;
 
-public class NotFoundException extends RuntimeException {
+public class NotFoundException extends Exception {
     private final String errorCode;
 
     public NotFoundException(String errorCode, String message) {

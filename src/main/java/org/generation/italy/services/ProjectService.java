@@ -31,21 +31,21 @@ public class ProjectService {
     }
 
     @Transactional(readOnly = true)
-    public ProjectDto findById(Integer id) {
+    public ProjectDto findById(Integer id) throws NotFoundException {
         Project project = projectRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Project_not_found", "Project not found: " + id));
         return toDto(project);
     }
 
     @Transactional(readOnly = true)
-    public ProjectDto findByCode(String code) {
+    public ProjectDto findByCode(String code) throws NotFoundException {
         Project project = projectRepository.findByCodeIgnoreCase(code)
                 .orElseThrow(() -> new NotFoundException("Project_not_found", "Project not found: " + code));
         return toDto(project);
     }
 
     @Transactional(readOnly = true)
-    public ProjectDto findByName(String name) {
+    public ProjectDto findByName(String name) throws NotFoundException {
         Project project = projectRepository.findByNameIgnoreCase(name)
                 .orElseThrow(() -> new NotFoundException("Project_not_found", "Project not found: " + name));
         return toDto(project);
@@ -68,7 +68,7 @@ public class ProjectService {
     }
 
     @Transactional
-    public ProjectDto updateProject(Integer id, ProjectRequest request) {
+    public ProjectDto updateProject(Integer id, ProjectRequest request) throws NotFoundException {
         Project project = projectRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Project_not_found", "Project not found: " + id));
 
@@ -85,7 +85,7 @@ public class ProjectService {
     }
 
     @Transactional
-    public void deleteProject(Integer id) {
+    public void deleteProject(Integer id) throws NotFoundException {
         if (!projectRepository.existsById(id)) {
             throw new NotFoundException("Project_not_found", "Project not found: " + id);
         }

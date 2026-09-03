@@ -41,21 +41,21 @@ public class DomainService {
     }
 
     @Transactional(readOnly = true)
-    public DomainDto findById(Integer id) {
+    public DomainDto findById(Integer id) throws NotFoundException {
         Domain domain = domainRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Domain_not_found", "Domain not found: " + id));
         return toDto(domain);
     }
 
     @Transactional(readOnly = true)
-    public DomainDto findByName(String name) {
+    public DomainDto findByName(String name) throws NotFoundException {
         Domain domain = domainRepository.findByNameIgnoreCase(name)
                 .orElseThrow(() -> new NotFoundException("Domain_not_found", "Domain not found: " + name));
         return toDto(domain);
     }
 
     @Transactional
-    public DomainDto createDomain(DomainRequest request) {
+    public DomainDto createDomain(DomainRequest request) throws NotFoundException {
         if (domainRepository.existsByNameIgnoreCase(request.name())) {
             throw new ConflictException("Domain_name_already_exists", "Domain name already exists: " + request.name());
         }
@@ -68,7 +68,7 @@ public class DomainService {
     }
 
     @Transactional
-    public DomainDto updateDomain(Integer id, DomainRequest request) {
+    public DomainDto updateDomain(Integer id, DomainRequest request) throws NotFoundException {
         Domain domain = domainRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Domain_not_found", "Domain not found: " + id));
 
@@ -81,7 +81,7 @@ public class DomainService {
         return toDto(domainRepository.save(domain));
     }
 
-    private Set<Activity> resolveActivities(List<Integer> activityIds) {
+    private Set<Activity> resolveActivities(List<Integer> activityIds) throws NotFoundException {
         if (activityIds == null || activityIds.isEmpty()) {
             return Set.of();
         }
@@ -93,7 +93,7 @@ public class DomainService {
     }
 
     @Transactional
-    public void deleteDomain(Integer id) {
+    public void deleteDomain(Integer id) throws NotFoundException {
         if (!domainRepository.existsById(id)) {
             throw new NotFoundException("Domain_not_found", "Domain not found: " + id);
         }

@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import org.generation.italy.model.dto.RegistrationDto;
 import org.generation.italy.model.dto.RegistrationRequest;
 import org.generation.italy.model.exceptions.BadRequestException;
+import org.generation.italy.model.exceptions.NotFoundException;
 import org.generation.italy.services.RegistrationExportService;
 import org.generation.italy.services.RegistrationService;
 import org.springframework.http.HttpHeaders;
@@ -31,7 +32,7 @@ public class RegistrationController {
 
 
     @GetMapping("/{id}")
-    public RegistrationDto getById(@PathVariable Long id) {
+    public RegistrationDto getById(@PathVariable Long id) throws NotFoundException {
         return registrationService.findById(id);
     }
 
@@ -42,13 +43,13 @@ public class RegistrationController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public RegistrationDto create(@Valid @RequestBody RegistrationRequest request) {
+    public RegistrationDto create(@Valid @RequestBody RegistrationRequest request) throws NotFoundException {
         return registrationService.createRegistration(request);
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public RegistrationDto update(@PathVariable Long id, @Valid @RequestBody RegistrationRequest request, @AuthenticationPrincipal Jwt jwt) {
+    public RegistrationDto update(@PathVariable Long id, @Valid @RequestBody RegistrationRequest request, @AuthenticationPrincipal Jwt jwt) throws NotFoundException {
         Integer adminId = extractOperatorId(jwt);
         return registrationService.updateRegistration(id, request, adminId);
     }
@@ -56,7 +57,7 @@ public class RegistrationController {
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasRole('ADMIN')")
-    public void delete(@PathVariable Long id, @AuthenticationPrincipal Jwt jwt) {
+    public void delete(@PathVariable Long id, @AuthenticationPrincipal Jwt jwt) throws NotFoundException {
         Integer adminId = extractOperatorId(jwt);
         registrationService.deleteRegistration(id, adminId);
     }

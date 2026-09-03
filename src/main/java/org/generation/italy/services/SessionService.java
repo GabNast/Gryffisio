@@ -31,7 +31,7 @@ public class SessionService {
     }
 
     @Transactional(readOnly = true)
-    public SessionDto findById(Integer id) {
+    public SessionDto findById(Integer id) throws NotFoundException {
         Session session = sessionRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Session_not_found", "Session not found: " + id));
         return toDto(session);
@@ -49,7 +49,7 @@ public class SessionService {
     }
 
     @Transactional
-    public SessionDto updateSession(Integer id, SessionRequest request) {
+    public SessionDto updateSession(Integer id, SessionRequest request) throws NotFoundException {
         Session session = sessionRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Session_not_found", "Session not found: " + id));
 
@@ -62,7 +62,7 @@ public class SessionService {
     }
 
     @Transactional
-    public void deleteSession(Integer id) {
+    public void deleteSession(Integer id) throws NotFoundException {
         if (!sessionRepository.existsById(id)) {
             throw new NotFoundException("Session_not_found", "Session not found: " + id);
         }

@@ -31,7 +31,7 @@ public class SubjectTypeService {
     }
 
     @Transactional(readOnly = true)
-    public SubjectTypeDto findById(Integer id) {
+    public SubjectTypeDto findById(Integer id) throws NotFoundException {
         SubjectType subjectType = subjectTypeRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Subject_type_not_found", "Subject type not found: " + id));
         return toDto(subjectType);
@@ -49,7 +49,7 @@ public class SubjectTypeService {
     }
 
     @Transactional
-    public SubjectTypeDto updateSubjectType(Integer id, SubjectTypeRequest request) {
+    public SubjectTypeDto updateSubjectType(Integer id, SubjectTypeRequest request) throws NotFoundException {
         SubjectType subjectType = subjectTypeRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Subject_type_not_found", "Subject type not found: " + id));
 
@@ -62,7 +62,7 @@ public class SubjectTypeService {
     }
 
     @Transactional
-    public void deleteSubjectType(Integer id) {
+    public void deleteSubjectType(Integer id) throws NotFoundException {
         if (!subjectTypeRepository.existsById(id)) {
             throw new NotFoundException("Subject_type_not_found", "Subject type not found: " + id);
         }
