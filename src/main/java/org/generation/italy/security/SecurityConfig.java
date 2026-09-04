@@ -93,7 +93,6 @@ public class SecurityConfig {
                         // Subject: lettura e creazione pubbliche (creato al volo dal form), modifica/cancellazione solo admin
                         .requestMatchers(HttpMethod.GET, "/api/subjects/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/subjects").permitAll()
-
                         // Registration: creazione e lettura pubbliche, modifica/cancellazione solo admin
                         .requestMatchers(HttpMethod.POST, "/api/registrations").permitAll()
                         // Export CSV esporta l'intero archivio per cui solo admin

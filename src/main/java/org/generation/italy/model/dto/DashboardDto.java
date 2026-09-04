@@ -3,7 +3,7 @@ package org.generation.italy.model.dto;
 import java.util.List;
 
 public record DashboardDto(
-        long totalRegistration,
+        long totalRegistrations,
         Long selectProjectRegistration,
         List<OperatorMatricsDto> operatorMatrics,
         List<DomainMatricsDto> domainMatrics
